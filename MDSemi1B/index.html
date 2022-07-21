@@ -94,6 +94,7 @@ asr.interimResults = true; // 途中結果出力をオン
 asr.continuous = true; // 継続入力をオン
 
 let output = ''; // 出力
+let answer;
 
 // 認識結果が出力されたときのイベントハンドラ
 asr.onresult = function(event){
@@ -104,7 +105,6 @@ asr.onresult = function(event){
 	    asr.abort(); // 音声認識を停止
       let ret = response[transcript];
 
-      let answer;
       let webpage;
 
       let keys = Object.keys(response);
@@ -120,6 +120,7 @@ asr.onresult = function(event){
           });
 
           if(flag){
+          webpage = response[key][1];
           answer = response[key][0];
               console.log(key + " : " + answer);
           }
@@ -135,7 +136,7 @@ asr.onresult = function(event){
 	    // 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
 	    tts.onend = function(event){
           if(typeof webpage != 'undefined'){
-              window.open(webpage, '_blank'); // ページを移動
+              location.href = webpage; // ページを移動
           }
 	        asr.start(); // 音声認識を再開
 	    }
@@ -144,7 +145,7 @@ asr.onresult = function(event){
     } else { // 結果がまだ未確定のとき
         output_not_final = '<span style="color:#ddd;">' + transcript + '</span>';
     }
-    resultOutput.innerHTML = transcript + " => " + response[transcript]; // 応答結果の出力;
+    resultOutput.innerHTML = transcript + " => " + answer; // 応答結果の出力;
 }
 
 // 開始ボタンのイベントハンドラ
