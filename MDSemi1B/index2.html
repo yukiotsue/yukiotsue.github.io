@@ -14,18 +14,33 @@
 <!-- スタイルシート -->
 <style type="text/css">
 
+h1 {
+  text-align: center;
+  color: #eb6100;
+  font-family: 'Dela Gothic One', cursive;
+}
+
 h3 {
-  color: white;
   text-align: center;
   font-family: 'Sawarabi Mincho', serif;
 }
 
-body {
-  background: linear-gradient(120deg, #43e97b 0%, #38f9d7 100%);
+button.btn {
+  /* ボタンの色 */
+  color: #fff;
+  background-color: #eb6100;
+  border-bottom: 5px solid #b84c00;
 }
 
-.btn {
-  padding: 1em 1em;
+button.btn:hover {
+  /* ボタンの色 */
+  color: #fff;
+  background: #f56500;
+  border-bottom: 2px solid #b84c00;
+}
+
+button.btn-radius {
+  border-radius: 100vh;
 }
 
 </style>
@@ -35,13 +50,11 @@ body {
 
 <h1>音声対話</h1>
 
-<img src="MDSemi1B/summer_veg.svg">
-
 <h3>60256041-大杖裕喜</h3>
 
 <p class=”button″>
-<button id="startButton" class="btn">start</button>
-<button id="stopButton" class="btn">stop</button>
+<button id="startButton" class="btn btn-radius">start</button>
+<button id="stopButton" class="btn btn-radius">stop</button>
 </p>
 
 <p>
