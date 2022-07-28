@@ -34,7 +34,7 @@ body {
 }
 
 img.summer {
-  width: 40%;
+  width: 50%;
   height: auto;
 }
 
@@ -45,14 +45,18 @@ img.summer {
 
 <h2>音声対話</h2>
 
-<img src="summer_veg.svg" class="summer">
+<div align="center">
+  <img src="summer_veg.svg" class="summer">
+</div>
 
 <h3>60256041-大杖裕喜</h3>
 
-<p class=”button″>
-<button id="startButton" class="btn">start</button>
-<button id="stopButton" class="btn">stop</button>
-</p>
+<div align="center">
+  <p class=”button″>
+    <button id="startButton" class="btn">start</button>
+    <button id="stopButton" class="btn">stop</button>
+  </p>
+</div>
 
 <p>
 <div id="resultOutput"></div>
@@ -63,8 +67,9 @@ img.summer {
 var response = {
   "夏野菜": ["夏野菜にはトマト、ナス、きゅうり、オクラ、ゴーヤがあります"],
   "トマト": ["ナマでも美味しい", "https://cookpad.com/search/トマト"],
-  "ナス": ["油や肉と相性がいい", "https://cookpad.com/search/ナス"],
-  "きゅうり": ["京都府の天気予報を表示します", "https://cookpad.com/search/きゅうり"],
+  "茄子": ["油や肉と相性がいい", "https://cookpad.com/search/ナス"],
+  "なす": ["油や肉と相性がいい", "https://cookpad.com/search/ナス"],
+  "きゅうり": ["サラダにピッタリ", "https://cookpad.com/search/きゅうり"],
   "オクラ": ["オクラは英語でもオクラ", "https://cookpad.com/search/オクラ"],
   "ゴーヤ": ["ちむどんどん", "https://cookpad.com/search/ゴーヤ"]
 };
