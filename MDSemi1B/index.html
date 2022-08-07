@@ -17,18 +17,21 @@
 h2 {
   color: white;
   font-family: 'Sawarabi Mincho', serif;
+  text-shadow: 1px 2px 3px #808080;
 }
 
 h3 {
   color: white;
   text-align: center;
   font-family: 'Sawarabi Mincho', serif;
+  text-shadow: 1px 2px 3px #808080;
 }
 
 p {
   color: white;
   text-align: center;
   font-family: 'Sawarabi Mincho', serif;
+  text-shadow: 1px 2px 3px #808080;
 }
 
 body {
@@ -37,6 +40,9 @@ body {
 
 .btn {
   padding: 1em 1em;
+  border-radius: 100vh;
+  color: black;
+  background-color: white;
 }
 
 img.summer {
@@ -74,6 +80,7 @@ img.summer {
 <script>
 // 応答の定義（ハッシュ）
 var response = {
+  "こんにちは": ["こんにちは！夏野菜を教えてください"],
   "夏野菜": ["夏野菜にはトマト、ナス、きゅうり、オクラ、ゴーヤがあります"],
   "トマト": ["ナマでも美味しい", "https://cookpad.com/search/トマト"],
   "茄子": ["油や肉と相性がいい", "https://cookpad.com/search/ナス"],
@@ -81,13 +88,16 @@ var response = {
   "きゅうり": ["サラダにピッタリ", "https://cookpad.com/search/きゅうり"],
   "オクラ": ["オクラは英語でもオクラ", "https://cookpad.com/search/オクラ"],
   "ゴーヤ": ["ちむどんどん", "https://cookpad.com/search/ゴーヤ"],
-  "ズッキーニ": ["", "https://cookpad.com/search/"],
-  "ピーマン": ["", "https://cookpad.com/search/"],
-  "かぼちゃ": ["", "https://cookpad.com/search/"],
-  "カボチャ": ["", "https://cookpad.com/search/"],
-  "枝豆": ["", "https://cookpad.com/search/"],
-  "とうもろこし": ["", "https://cookpad.com/search/"],
-  "トウモロコシ": ["", "https://cookpad.com/search/"],
+  "ズッキーニ": ["実はカボチャの仲間", "https://cookpad.com/search/ズッキーニ"],
+  "ピーマン": ["ビタミンCがたっぷり", "https://cookpad.com/search/ピーマン"],
+  "かぼちゃ": ["冬野菜と間違えられがち", "https://cookpad.com/search/カボチャ"],
+  "カボチャ": ["冬野菜と間違えられがち", "https://cookpad.com/search/カボチャ"],
+  "枝豆": ["実は緑黄色野菜", "https://cookpad.com/search/枝豆"],
+  "とうもろこし": ["そのままでも美味しい", "https://cookpad.com/search/とうもろこし"],
+  "トウモロコシ": ["そのままでも美味しい", "https://cookpad.com/search/とうもろこし"],
+  "秋野菜": ["秋野菜も美味しいですね"],
+  "冬野菜": ["冬野菜も美味しいですね"],
+  "春野菜": ["春野菜も美味しいですね"]
 };
 
 const textForm = document.querySelector('#textForm'); // テキスト入力欄
