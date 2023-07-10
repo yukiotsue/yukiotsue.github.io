@@ -75,6 +75,11 @@ footer p {
   color: #fff;
 }
 
+a {
+  color: white;
+  text-decoration: none;
+}
+
 
 /* main */
 main {
