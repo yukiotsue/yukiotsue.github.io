@@ -1,0 +1,12 @@
+body, html {
+    margin: 0;
+    height: 100%;
+}
+
+.fullscreen-image {
+    background-image: url('ichimai.csv');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh; /* ビューポートの高さの100% */
+}
