@@ -4,7 +4,7 @@ body, html {
 }
 
 .fullscreen-image {
-    background-image: url('ichimai.csv');
+    background-image: url('ichimai.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
