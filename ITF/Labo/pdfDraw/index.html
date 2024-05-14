@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>画像に描線を追加</title>
+    <style>
+        #canvasContainer {
+            position: relative;
+            display: inline-block;
+        }
+        #imageCanvas, #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvasContainer">
+        <canvas id="imageCanvas"></canvas>
+        <canvas id="drawingCanvas"></canvas>
+    </div>
+    <input type="file" id="upload" accept="image/*" style="display: none;">
+    <button id="uploadButton">画像を選択</button>
+    <script src="script.js"></script>
+</body>
+</html>
