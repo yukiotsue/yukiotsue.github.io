@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <title>複数画像に描線を追加</title>
     <style>
-        .canvasContainer {
+        #controls {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #canvasContainer {
             position: relative;
-            display: inline-block;
-            margin-bottom: 20px;
+            display: block;
             width: 60%; /* ページ幅の60%に設定 */
+            margin: auto;
+            margin-top: 20px; /* 上に余白を追加 */
         }
         .imageCanvas, .drawingCanvas {
             position: absolute;
@@ -24,9 +31,16 @@
     </style>
 </head>
 <body>
+    <div id="controls">
+        <button id="prevButton">もどる</button>
+        <button id="nextButton">すすむ</button>
+    </div>
     <input type="file" id="upload" accept=".zip" style="display: none;">
     <button id="uploadButton">ZIPファイルを選択</button>
-    <div id="canvasContainerList"></div>
+    <div id="canvasContainer">
+        <canvas id="imageCanvas" class="imageCanvas"></canvas>
+        <canvas id="drawingCanvas" class="drawingCanvas"></canvas>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <script src="script.js"></script>
 </body>
