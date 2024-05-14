@@ -2,26 +2,32 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>画像に描線を追加</title>
+    <title>複数画像に描線を追加</title>
     <style>
-        #canvasContainer {
+        .canvasContainer {
             position: relative;
             display: inline-block;
+            margin-bottom: 20px;
+            width: 60%; /* ページ幅の60%に設定 */
         }
-        #imageCanvas, #drawingCanvas {
+        .imageCanvas, .drawingCanvas {
             position: absolute;
             top: 0;
             left: 0;
         }
+        .imageCanvas {
+            z-index: 1;
+        }
+        .drawingCanvas {
+            z-index: 2;
+        }
     </style>
 </head>
 <body>
-    <div id="canvasContainer">
-        <canvas id="imageCanvas"></canvas>
-        <canvas id="drawingCanvas"></canvas>
-    </div>
-    <input type="file" id="upload" accept="image/*" style="display: none;">
-    <button id="uploadButton">画像を選択</button>
+    <input type="file" id="upload" accept=".zip" style="display: none;">
+    <button id="uploadButton">ZIPファイルを選択</button>
+    <div id="canvasContainerList"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
