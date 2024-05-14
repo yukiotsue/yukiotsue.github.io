@@ -8,6 +8,7 @@ const imageCanvas = document.getElementById('imageCanvas');
 const drawingCanvas = document.getElementById('drawingCanvas');
 const imageCtx = imageCanvas.getContext('2d');
 const drawingCtx = drawingCanvas.getContext('2d');
+const canvasContainer = document.getElementById('canvasContainer');
 
 let currentImageIndex = 0;
 let images = [];
@@ -30,8 +31,8 @@ function handleZipUpload(event) {
                         const img = new Image();
                         img.src = URL.createObjectURL(blob);
                         img.onload = function() {
-                            const windowWidth = window.innerWidth;
-                            const scaleFactor = (windowWidth * 0.6) / img.width;
+                            const windowHeight = window.innerHeight;
+                            const scaleFactor = (windowHeight * 0.7) / img.height;
                             const scaledWidth = img.width * scaleFactor;
                             const scaledHeight = img.height * scaleFactor;
 
@@ -76,6 +77,8 @@ function displayImage(index) {
         drawingCtx.lineWidth = 5;
 
         imageNameElement.textContent = images[index].name; // 画像の名前を表示
+        canvasContainer.style.width = `${scaledWidth}px`;
+        canvasContainer.style.height = `${scaledHeight}px`;
         redrawHistory();
     }
 }
