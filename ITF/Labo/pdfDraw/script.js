@@ -3,6 +3,7 @@ document.getElementById('upload').addEventListener('change', handleZipUpload);
 document.getElementById('prevButton').addEventListener('click', showPrevImage);
 document.getElementById('nextButton').addEventListener('click', showNextImage);
 
+const imageNameElement = document.getElementById('imageName');
 const imageCanvas = document.getElementById('imageCanvas');
 const drawingCanvas = document.getElementById('drawingCanvas');
 const imageCtx = imageCanvas.getContext('2d');
@@ -74,6 +75,7 @@ function displayImage(index) {
         drawingCtx.fillStyle = 'rgba(255, 0, 0, 0.8)';
         drawingCtx.lineWidth = 5;
 
+        imageNameElement.textContent = images[index].name; // 画像の名前を表示
         redrawHistory();
     }
 }
