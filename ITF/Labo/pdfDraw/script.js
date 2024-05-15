@@ -3,6 +3,7 @@ document.getElementById('upload').addEventListener('change', handleZipUpload);
 document.getElementById('prevButton').addEventListener('click', showPrevImage);
 document.getElementById('nextButton').addEventListener('click', showNextImage);
 document.getElementById('downloadButton').addEventListener('click', downloadDrawings);
+document.getElementById('downloadLinesButton').addEventListener('click', downloadLines);
 
 const imageNameElement = document.getElementById('imageName');
 const imageCanvas = document.getElementById('imageCanvas');
@@ -156,6 +157,8 @@ function redrawHistory() {
 
 function downloadDrawings() {
     const zip = new JSZip();
+    let processedImages = 0;
+
     images.forEach((image, index) => {
         const drawingCanvas = document.createElement('canvas');
         drawingCanvas.width = image.scaledWidth;
@@ -181,11 +184,54 @@ function downloadDrawings() {
 
         drawingCanvas.toBlob((blob) => {
             zip.file(`drawing_${index + 1}.png`, blob);
-            if (index === images.length - 1) {
+            processedImages++;
+
+            if (processedImages === images.length) {
                 zip.generateAsync({ type: 'blob' }).then((content) => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(content);
                     link.download = 'drawings.zip';
+                    link.click();
+                });
+            }
+        });
+    });
+}
+
+function downloadLines() {
+    const zip = new JSZip();
+    let processedImages = 0;
+
+    images.forEach((image, index) => {
+        const lineCanvas = document.createElement('canvas');
+        lineCanvas.width = image.scaledWidth;
+        lineCanvas.height = image.scaledHeight;
+        const lineCtx = lineCanvas.getContext('2d');
+
+        lineCtx.strokeStyle = 'red';
+        lineCtx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+        lineCtx.lineWidth = 5;
+
+        image.drawingHistory.forEach((path) => {
+            lineCtx.beginPath();
+            lineCtx.moveTo(path[0].x, path[0].y);
+            for (let i = 1; i < path.length; i++) {
+                lineCtx.lineTo(path[i].x, path[i].y);
+            }
+            lineCtx.closePath();
+            lineCtx.fill();
+            lineCtx.stroke();
+        });
+
+        lineCanvas.toBlob((blob) => {
+            zip.file(`line_${index + 1}.png`, blob);
+            processedImages++;
+
+            if (processedImages === images.length) {
+                zip.generateAsync({ type: 'blob' }).then((content) => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(content);
+                    link.download = 'lines.zip';
                     link.click();
                 });
             }
