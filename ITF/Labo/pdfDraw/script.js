@@ -2,6 +2,7 @@ document.getElementById('uploadButton').addEventListener('click', () => document
 document.getElementById('upload').addEventListener('change', handleZipUpload);
 document.getElementById('prevButton').addEventListener('click', showPrevImage);
 document.getElementById('nextButton').addEventListener('click', showNextImage);
+document.getElementById('downloadButton').addEventListener('click', downloadDrawings);
 
 const imageNameElement = document.getElementById('imageName');
 const imageCanvas = document.getElementById('imageCanvas');
@@ -151,4 +152,43 @@ function redrawHistory() {
         drawingCtx.fill();
         drawingCtx.stroke();
     }
+}
+
+function downloadDrawings() {
+    const zip = new JSZip();
+    images.forEach((image, index) => {
+        const drawingCanvas = document.createElement('canvas');
+        drawingCanvas.width = image.scaledWidth;
+        drawingCanvas.height = image.scaledHeight;
+        const drawingCtx = drawingCanvas.getContext('2d');
+
+        drawingCtx.drawImage(image.img, 0, 0, image.scaledWidth, image.scaledHeight);
+
+        drawingCtx.strokeStyle = 'red';
+        drawingCtx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+        drawingCtx.lineWidth = 5;
+
+        image.drawingHistory.forEach((path) => {
+            drawingCtx.beginPath();
+            drawingCtx.moveTo(path[0].x, path[0].y);
+            for (let i = 1; i < path.length; i++) {
+                drawingCtx.lineTo(path[i].x, path[i].y);
+            }
+            drawingCtx.closePath();
+            drawingCtx.fill();
+            drawingCtx.stroke();
+        });
+
+        drawingCanvas.toBlob((blob) => {
+            zip.file(`drawing_${index + 1}.png`, blob);
+            if (index === images.length - 1) {
+                zip.generateAsync({ type: 'blob' }).then((content) => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(content);
+                    link.download = 'drawings.zip';
+                    link.click();
+                });
+            }
+        });
+    });
 }
