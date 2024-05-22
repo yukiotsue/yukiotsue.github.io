@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>複数画像に描線を追加</title>
+    <style>
+        #controls {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+        #canvasContainer {
+            position: relative;
+            display: block;
+            width: auto;
+            height: 70vh; /* ページの高さの70% */
+            margin: auto;
+            margin-top: 20px; /* 上に余白を追加 */
+            border: 2px solid black; /* 黒色の枠線を追加 */
+        }
+        .imageCanvas, .drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .imageCanvas {
+            z-index: 1;
+        }
+        .drawingCanvas {
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div id="imageName">画像の名前</div>
+        <button id="prevButton">もどる</button>
+        <button id="nextButton">すすむ</button>
+    </div>
+    <input type="file" id="upload" accept=".zip" style="display: none;">
+    <button id="uploadButton">ZIPファイルを選択</button>
+    <button id="downloadButton">描画画像をダウンロード</button>
+    <button id="downloadLinesButton">描線のみをダウンロード</button>
+    <button id="downloadAreaCSVButton">面積割合をCSVでダウンロード</button>
+    <div id="canvasContainer">
+        <canvas id="imageCanvas" class="imageCanvas"></canvas>
+        <canvas id="drawingCanvas" class="drawingCanvas"></canvas>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
