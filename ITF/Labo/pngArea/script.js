@@ -16,6 +16,7 @@ const canvasContainer = document.getElementById('canvasContainer');
 let currentImageIndex = 0;
 let images = [];
 
+// ZIPファイルのアップロードを処理
 function handleZipUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -44,9 +45,11 @@ function handleZipUpload(event) {
                                 img: img,
                                 scaledWidth: scaledWidth,
                                 scaledHeight: scaledHeight,
+                                originalArea: img.width * img.height, // 元の画像の面積
                                 drawingHistory: []
                             });
 
+                            // 最初の画像を表示
                             if (images.length === 1) {
                                 displayImage(0);
                             }
@@ -59,6 +62,7 @@ function handleZipUpload(event) {
     }
 }
 
+// 指定されたインデックスの画像を表示
 function displayImage(index) {
     if (index >= 0 && index < images.length) {
         currentImageIndex = index;
@@ -86,12 +90,14 @@ function displayImage(index) {
     }
 }
 
+// 前の画像を表示
 function showPrevImage() {
     if (currentImageIndex > 0) {
         displayImage(currentImageIndex - 1);
     }
 }
 
+// 次の画像を表示
 function showNextImage() {
     if (currentImageIndex < images.length - 1) {
         displayImage(currentImageIndex + 1);
@@ -101,6 +107,7 @@ function showNextImage() {
 let drawing = false;
 let currentPath = [];
 
+// 描画の開始
 drawingCanvas.addEventListener('mousedown', (e) => {
     if (e.button === 0) {
         drawing = true;
@@ -109,6 +116,8 @@ drawingCanvas.addEventListener('mousedown', (e) => {
         drawingCtx.moveTo(e.offsetX, e.offsetY);
     }
 });
+
+// 描画の終了
 drawingCanvas.addEventListener('mouseup', () => {
     if (drawing) {
         drawing = false;
@@ -116,6 +125,8 @@ drawingCanvas.addEventListener('mouseup', () => {
         fillCurrentPath();
     }
 });
+
+// 描画中
 drawingCanvas.addEventListener('mousemove', (e) => {
     if (!drawing) return;
     const x = e.offsetX;
@@ -124,17 +135,21 @@ drawingCanvas.addEventListener('mousemove', (e) => {
     drawingCtx.lineTo(x, y);
     drawingCtx.stroke();
 });
+
+// 最後の線を取り消す
 drawingCanvas.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     undoLastLine();
 });
 
+// 現在のパスを塗りつぶして描画
 function fillCurrentPath() {
     drawingCtx.closePath();
     drawingCtx.fill();
     drawingCtx.stroke();
 }
 
+// 最後の線を取り消して再描画
 function undoLastLine() {
     if (images[currentImageIndex].drawingHistory.length > 0) {
         images[currentImageIndex].drawingHistory.pop();
@@ -142,6 +157,7 @@ function undoLastLine() {
     }
 }
 
+// 描画履歴を再描画
 function redrawHistory() {
     drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
     for (const path of images[currentImageIndex].drawingHistory) {
@@ -156,6 +172,7 @@ function redrawHistory() {
     }
 }
 
+// 描画した画像をZIPファイルとしてダウンロード
 function downloadDrawings() {
     const zip = new JSZip();
     let processedImages = 0;
@@ -199,6 +216,7 @@ function downloadDrawings() {
     });
 }
 
+// 描線のみをZIPファイルとしてダウンロード
 function downloadLines() {
     const zip = new JSZip();
     let processedImages = 0;
@@ -240,13 +258,14 @@ function downloadLines() {
     });
 }
 
+// キャンバスの赤い部分の面積を計算
 function calculateArea(ctx, width, height) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     let count = 0;
 
     for (let i = 0; i < data.length; i += 4) {
-        // Check if the pixel is red
+        // 赤いピクセルをカウント
         if (data[i] === 255 && data[i + 1] === 0 && data[i + 2] === 0) {
             count++;
         }
@@ -255,8 +274,9 @@ function calculateArea(ctx, width, height) {
     return count;
 }
 
+// 面積割合をCSVでダウンロード
 function downloadAreaCSV() {
-    let csvContent = "ファイル名,面積,面積割合\n";
+    let csvContent = "ファイル名,もとの画像の面積,描線部分の面積,面積割合\n";
 
     images.forEach((image, index) => {
         const lineCanvas = document.createElement('canvas');
@@ -283,7 +303,7 @@ function downloadAreaCSV() {
         const totalPixels = lineCanvas.width * lineCanvas.height;
         const areaPercentage = (redPixelCount / totalPixels) * 100;
 
-        csvContent += `${image.name},${redPixelCount},${areaPercentage.toFixed(2)}%\n`;
+        csvContent += `${image.name},${image.originalArea},${redPixelCount},${areaPercentage.toFixed(2)}%\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
