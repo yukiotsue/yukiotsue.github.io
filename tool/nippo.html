@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日報ツクール</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    form input[type="text"],
+    form input[type="date"],
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .date-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 15px;
+      }
+      .date-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>日報ツクール</h1>
+    <form id="dailyReportForm">
+      <label for="reportDate">日付：</label>
+      <div class="date-wrapper">
+        <input type="date" id="reportDate" name="reportDate" required>
+        <button type="button" onclick="setToday()">今日の日付を適用</button>
+      </div>
+      
+      <label for="student">生徒：</label>
+      <input type="text" id="student" name="student" placeholder="生徒の名前を入力" required>
+      
+      <label for="lessonFeedback">授業の反省、改善点：</label>
+      <textarea id="lessonFeedback" name="lessonFeedback" placeholder="授業の反省や改善点を入力" required></textarea>
+      
+      <label for="otherTasks">それ以外の業務：</label>
+      <textarea id="otherTasks" name="otherTasks" placeholder="その他の業務内容を入力" required></textarea>
+      
+      <label for="notices">連絡事項：</label>
+      <textarea id="notices" name="notices" placeholder="連絡事項を入力" required></textarea>
+      
+      <button type="button" onclick="copyReport()">テキストをコピー</button>
+    </form>
+  </div>
+
+  <script>
+    // 今日の日付をyyyy-mm-dd形式で取得してセットする関数
+    function setToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = ('0' + (today.getMonth() + 1)).slice(-2);
+      const day = ('0' + today.getDate()).slice(-2);
+      const formattedDate = year + '-' + month + '-' + day;
+      document.getElementById('reportDate').value = formattedDate;
+    }
+
+    function copyReport() {
+      // 日付フィールドの値を取得
+      var reportDate = document.getElementById("reportDate").value;
+      var dayOfWeekStr = "";
+      if (reportDate) {
+        // 入力された日付から曜日を算出（0:日曜日～6:土曜日）
+        var dateObj = new Date(reportDate);
+        var days = ["日", "月", "火", "水", "木", "金", "土"];
+        dayOfWeekStr = "（" + days[dateObj.getDay()] + "）";
+      }
+      
+      var student = document.getElementById("student").value;
+      var lessonFeedback = document.getElementById("lessonFeedback").value;
+      var otherTasks = document.getElementById("otherTasks").value;
+      var notices = document.getElementById("notices").value;
+      
+      // 指定のフォーマットに合わせてテキストを組み立てる
+      var reportText = "・日付：" + reportDate + dayOfWeekStr + "\n" +
+                       "・生徒：" + student + "\n" +
+                       "・授業の反省、改善点：" + lessonFeedback + "\n" +
+                       "・それ以外の業務：" + otherTasks + "\n" +
+                       "・連絡事項：" + notices;
+      
+      // Clipboard APIを利用してテキストをコピー
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(reportText).then(function() {
+          alert("テキストがコピーされました!");
+        }, function(err) {
+          alert("コピーに失敗しました: " + err);
+        });
+      } else {
+        // Clipboard APIが使えない場合はフォールバック処理
+        var textArea = document.createElement("textarea");
+        textArea.value = reportText;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          if(successful) {
+            alert("テキストがコピーされました!");
+          } else {
+            alert("コピーに失敗しました。");
+          }
+        } catch (err) {
+          alert("コピーに失敗しました: " + err);
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+  </script>
+</body>
+</html>
