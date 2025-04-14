@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>日報ツクール</title>
+  <title>日報作成ツール</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
       background-color: #f9f9f9;
+      /* 下部固定用の余白を用意 */
+      padding-bottom: 40px;
     }
     .container {
       max-width: 600px;
@@ -62,9 +64,25 @@
     button:hover {
       background-color: #0056b3;
     }
+    /* ページ下部に固定表示する小さなテキスト */
+    #copyright {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8em;
+      color: #aaa;
+      padding: 5px 0;
+      background: rgba(255, 255, 255, 0.8);
+    }
+    #copyright a {
+      color: inherit;
+      text-decoration: none;
+    }
     @media (max-width: 600px) {
       body {
         padding: 10px;
+        padding-bottom: 40px;
       }
       .container {
         padding: 15px;
@@ -78,7 +96,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>日報ツクール</h1>
+    <h1>日報作成ツール</h1>
     <form id="dailyReportForm">
       <label for="reportDate">日付：</label>
       <div class="date-wrapper">
@@ -100,6 +118,10 @@
       
       <button type="button" onclick="copyReport()">テキストをコピー</button>
     </form>
+  </div>
+
+  <div id="copyright">
+    <a href="https://www.yukiotsue.com" target="_blank">©︎yukiotsue</a>
   </div>
 
   <script>
