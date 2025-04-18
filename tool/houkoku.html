@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>報告書作成ツール</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 80%;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    form input[type="text"],
+    form input[type="date"],
+    form select,
+    form button,
+    form textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .date-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .next-lesson-wrapper {
+      margin-bottom: 20px;
+    }
+    .next-lesson-wrapper select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    .next-lesson-wrapper .output {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>報告書作成ツール</h1>
+    <form id="reportForm">
+      <label for="reportDate">日付：</label>
+      <div class="date-wrapper">
+        <input type="date" id="reportDate" name="reportDate" required>
+        <button type="button" onclick="setToday()">今日の日付を適用</button>
+      </div>
+
+      <label for="reportTime">時間：</label>
+      <select id="reportTimeSelect" name="reportTimeSelect" onchange="updateTime()">
+        <option value="">時間を選択</option>
+        <option value="16:00-16:50">16:00-16:50</option>
+        <option value="17:00-17:50">17:00-17:50</option>
+        <option value="18:00-18:50">18:00-18:50</option>
+        <option value="19:00-19:50">19:00-19:50</option>
+        <option value="20:00-20:50">20:00-20:50</option>
+        <option value="21:00-21:50">21:00-21:50</option>
+      </select>
+      
+      <label for="freeTimeInput">または、時間を自由に入力：</label>
+      <input type="text" id="freeTimeInput" name="freeTimeInput" placeholder="例: 18:30-19:20" disabled>
+
+      <label for="reportTeacher">担当：</label>
+      <input type="text" id="reportTeacher" name="reportTeacher" placeholder="担当者名を入力" required>
+      
+      <label for="reportWorkDone">今日行ったこと：</label>
+      <textarea id="reportWorkDone" name="reportWorkDone" placeholder="今日行った内容を入力" required></textarea>
+      
+      <label for="reportUnderstanding">生徒の理解が十分・不十分だった点：</label>
+      <textarea id="reportUnderstanding" name="reportUnderstanding" placeholder="生徒の理解について記入" required></textarea>
+      
+      <label for="reportHomework">宿題・学習習慣・学習姿勢について：</label>
+      <textarea id="reportHomework" name="reportHomework" placeholder="宿題や学習習慣について記入" required></textarea>
+
+      <div class="next-lesson-wrapper">
+        <label for="nextLessonDate">次回の授業日付：</label>
+        <input type="date" id="nextLessonDate" name="nextLessonDate" required onchange="updateNextLessonOutput()">
+        
+        <label for="nextLessonSubject">科目：</label>
+        <div class="subject-buttons">
+          <button type="button" onclick="setSubject('英語')">英語</button>
+          <button type="button" onclick="setSubject('数学')">数学</button>
+        </div>
+
+        <div id="nextLessonOutput" class="output" contenteditable="true"></div>
+      </div>
+
+      <button type="button" onclick="copyReport()">テキストをコピー</button>
+    </form>
+  </div>
+
+  <script>
+    function setToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = ('0' + (today.getMonth() + 1)).slice(-2);
+      const day = ('0' + today.getDate()).slice(-2);
+      const formattedDate = year + '-' + month + '-' + day;
+      document.getElementById('reportDate').value = formattedDate;
+    }
+
+    function updateTime() {
+      const timeSelect = document.getElementById("reportTimeSelect");
+      const freeTimeInput = document.getElementById("freeTimeInput");
+
+      if (timeSelect.value === "") {
+        freeTimeInput.disabled = false;
+      } else {
+        freeTimeInput.disabled = true;
+      }
+
+      if (timeSelect.value !== "") {
+        document.getElementById("freeTimeInput").value = timeSelect.value;
+      }
+    }
+
+    let subject = '';
+    function setSubject(selectedSubject) {
+      subject = selectedSubject;
+      updateNextLessonOutput();
+    }
+
+    function updateNextLessonOutput() {
+      const nextLessonDate = document.getElementById('nextLessonDate').value;
+      if (nextLessonDate && subject) {
+        const date = new Date(nextLessonDate);
+        const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('ja-JP', options);
+        document.getElementById('nextLessonOutput').textContent = `${formattedDate} - ${subject}`;
+      } else {
+        document.getElementById('nextLessonOutput').textContent = '';
+      }
+    }
+
+    function copyReport() {
+      var reportDate = document.getElementById("reportDate").value;
+      var reportTime = document.getElementById("reportTimeSelect").value;
+      var freeTimeInput = document.getElementById("freeTimeInput").value;
+      var reportTeacher = document.getElementById("reportTeacher").value;
+      var reportWorkDone = document.getElementById("reportWorkDone").value;
+      var reportUnderstanding = document.getElementById("reportUnderstanding").value;
+      var reportHomework = document.getElementById("reportHomework").value;
+      var reportNextLesson = document.getElementById("nextLessonOutput").textContent;
+
+      var reportTimeFinal = reportTime === "" ? freeTimeInput : reportTime;
+
+      const dateObj = new Date(reportDate);
+      const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+      const formattedDate = reportDate + " (" + daysOfWeek[dateObj.getDay()] + ")";
+
+      var reportWorkDoneFormatted = reportWorkDone.replace(/\n/g, "\r\n");
+      var reportUnderstandingFormatted = reportUnderstanding.replace(/\n/g, "\r\n");
+      var reportHomeworkFormatted = reportHomework.replace(/\n/g, "\r\n");
+
+      // テーブル形式で縦に並べる
+      var reportText = `日付:\t${formattedDate}\r\n時間:\t${reportTimeFinal}\r\n担当:\t${reportTeacher}\r\n今日行ったこと:\r\n${reportWorkDoneFormatted}\r\n理解が十分・不十分:\r\n${reportUnderstandingFormatted}\r\n宿題・学習習慣:\r\n${reportHomeworkFormatted}\r\n次回授業:\r\n${reportNextLesson}`;
+
+      // エクセルに貼り付ける形式（タブ区切り）
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(reportText).then(function() {
+          alert("テキストがコピーされました! Excelにペーストできます。");
+        }, function(err) {
+          alert("コピーに失敗しました: " + err);
+        });
+      } else {
+        var textArea = document.createElement("textarea");
+        textArea.value = reportText;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          var successful = document.execCommand('copy');
+          if(successful) {
+            alert("テキストがコピーされました! Excelにペーストできます。");
+          } else {
+            alert("コピーに失敗しました。");
+          }
+        } catch (err) {
+          alert("コピーに失敗しました: " + err);
+        }
+        document.body.removeChild(textArea);
+      }
+    }
+  </script>
+</body>
+</html>
