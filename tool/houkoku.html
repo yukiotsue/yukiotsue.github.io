@@ -183,9 +183,18 @@
       var reportTime = document.getElementById("reportTimeSelect").value;
       var freeTimeInput = document.getElementById("freeTimeInput").value;
       var reportTeacher = document.getElementById("reportTeacher").value;
-      var reportWorkDone = document.getElementById("reportWorkDone").value;
-      var reportUnderstanding = document.getElementById("reportUnderstanding").value;
-      var reportHomework = document.getElementById("reportHomework").value;
+      var reportWorkDone = "=" + document.getElementById("reportWorkDone").value
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
+      var reportUnderstanding = "=" + document.getElementById("reportUnderstanding").value
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
+      var reportHomework = "=" + document.getElementById("reportHomework").value
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
       var reportNextLesson = document.getElementById("nextLessonOutput").textContent;
 
       var reportTimeFinal = reportTime === "" ? freeTimeInput : reportTime;
@@ -199,7 +208,7 @@
       var reportHomeworkFormatted = reportHomework.replace(/\n/g, "\r\n");
 
       // テーブル形式で縦に並べる
-      var reportText = `日付:\t${formattedDate}\r\n時間:\t${reportTimeFinal}\r\n担当:\t${reportTeacher}\r\n今日行ったこと:\r\n${reportWorkDoneFormatted}\r\n理解が十分・不十分:\r\n${reportUnderstandingFormatted}\r\n宿題・学習習慣:\r\n${reportHomeworkFormatted}\r\n次回授業:\r\n${reportNextLesson}`;
+      var reportText = `${formattedDate}\r\n${reportTimeFinal}\r\n${reportTeacher}\r\n${reportWorkDoneFormatted}\r\n${reportUnderstandingFormatted}\r\n${reportHomeworkFormatted}\r\n${reportNextLesson}`;
 
       // エクセルに貼り付ける形式（タブ区切り）
       if (navigator.clipboard && window.isSecureContext) {
