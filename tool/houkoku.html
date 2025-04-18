@@ -13,73 +13,113 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      max-width: 100%; /* 横幅を広げる */
+      box-sizing: border-box;
     }
+
     .container {
-      max-width: 80%;
+      width: 100%;
+      max-width: 600px; /* 最大幅を600pxに設定 */
       margin: auto;
       background: #fff;
-      padding: 20px;
+      padding: 40px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      color: #333;
     }
+
     form label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
       font-weight: bold;
+      font-size: 1.1rem;
     }
+
     form input[type="text"],
     form input[type="date"],
     form select,
     form button,
     form textarea {
       width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
+      padding: 12px;
+      margin-bottom: 20px;
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-size: 1rem;
       box-sizing: border-box;
     }
+
     form textarea {
       resize: vertical;
-      min-height: 80px;
+      min-height: 120px;
     }
+
     .date-wrapper {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 15px;
+      margin-bottom: 20px;
     }
+
     button {
       display: block;
       width: 100%;
-      padding: 10px;
+      padding: 15px;
       background-color: #007BFF;
       color: #fff;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
+      border-radius: 6px;
+      font-size: 1.2rem;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     .next-lesson-wrapper {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
+
     .next-lesson-wrapper select {
       width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 1rem;
     }
+
     .next-lesson-wrapper .output {
-      font-size: 18px;
+      font-size: 1.2rem;
       font-weight: bold;
       margin-top: 10px;
     }
+
+    .subject-buttons button {
+      display: inline-block;
+      padding: 12px 20px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .subject-buttons button:hover {
+      background-color: #218838;
+    }
+
   </style>
 </head>
 <body>
