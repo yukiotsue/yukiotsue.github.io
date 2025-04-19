@@ -13,12 +13,13 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      max-width: 100%;
+      max-width: 100%; /* 横幅を広げる */
       box-sizing: border-box;
     }
+
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 600px; /* 最大幅を600pxに設定 */
       margin: auto;
       background: #fff;
       padding: 40px;
@@ -26,18 +27,21 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       box-sizing: border-box;
     }
+
     h1 {
       text-align: center;
       margin-bottom: 30px;
       font-size: 2rem;
       color: #333;
     }
+
     form label {
       display: block;
       margin-bottom: 10px;
       font-weight: bold;
       font-size: 1.1rem;
     }
+
     form input[type="text"],
     form input[type="date"],
     form select,
@@ -51,16 +55,19 @@
       font-size: 1rem;
       box-sizing: border-box;
     }
+
     form textarea {
       resize: vertical;
       min-height: 120px;
     }
+
     .date-wrapper {
       display: flex;
       align-items: center;
       gap: 15px;
       margin-bottom: 20px;
     }
+
     button {
       display: block;
       width: 100%;
@@ -73,23 +80,28 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: #0056b3;
     }
+
     .next-lesson-wrapper {
       margin-bottom: 30px;
     }
+
     .next-lesson-wrapper select {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
       font-size: 1rem;
     }
+
     .next-lesson-wrapper .output {
       font-size: 1.2rem;
       font-weight: bold;
       margin-top: 10px;
     }
+
     .subject-buttons button {
       display: inline-block;
       padding: 12px 20px;
@@ -103,40 +115,12 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     .subject-buttons button:hover {
       background-color: #218838;
     }
 
-    /* レポート用テーブル */
-    #reportTable {
-      display: none;
-      width: 100%;
-      max-width: 600px;
-      margin: 20px auto;
-      background: #fff;
-      box-sizing: border-box;
-    }
-    #reportTable table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    #reportTable td {
-      border: 1px solid #000;
-      padding: 8px;
-      vertical-align: top;
-    }
-    #reportTable td.label {
-      background-color: #d9ead3;
-      width: 30%;
-      font-weight: bold;
-    }
-    #reportTable td.value {
-      background-color: #fff;
-    }
   </style>
-
-  <!-- html2canvas を読み込む -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -158,25 +142,26 @@
         <option value="20:00-20:50">20:00-20:50</option>
         <option value="21:00-21:50">21:00-21:50</option>
       </select>
+      
       <label for="freeTimeInput">または、時間を自由に入力：</label>
       <input type="text" id="freeTimeInput" name="freeTimeInput" placeholder="例: 18:30-19:20" disabled>
 
       <label for="reportTeacher">担当：</label>
       <input type="text" id="reportTeacher" name="reportTeacher" placeholder="担当者名を入力" required>
-
+      
       <label for="reportWorkDone">今日行ったこと：</label>
       <textarea id="reportWorkDone" name="reportWorkDone" placeholder="今日行った内容を入力" required></textarea>
-
+      
       <label for="reportUnderstanding">生徒の理解が十分・不十分だった点：</label>
       <textarea id="reportUnderstanding" name="reportUnderstanding" placeholder="生徒の理解について記入" required></textarea>
-
+      
       <label for="reportHomework">宿題・学習習慣・学習姿勢について：</label>
       <textarea id="reportHomework" name="reportHomework" placeholder="宿題や学習習慣について記入" required></textarea>
 
       <div class="next-lesson-wrapper">
         <label for="nextLessonDate">次回の授業日付：</label>
         <input type="date" id="nextLessonDate" name="nextLessonDate" required onchange="updateNextLessonOutput()">
-
+        
         <label for="nextLessonSubject">科目：</label>
         <div class="subject-buttons">
           <button type="button" onclick="setSubject('英語')">英語</button>
@@ -186,146 +171,120 @@
         <div id="nextLessonOutput" class="output" contenteditable="true"></div>
       </div>
 
-      <!-- 既存のコピー用ボタン -->
       <button type="button" onclick="copyReport()">テキストをコピー</button>
-      <!-- 追加したJPEG出力ボタン -->
-      <button type="button" onclick="exportToJPEG()">画像として保存</button>
     </form>
   </div>
-
-  <!-- レポート用テーブル（キャプチャ用） -->
-  <div id="reportTable"></div>
 
   <script>
     function setToday() {
       const today = new Date();
-      const y = today.getFullYear();
-      const m = ('0' + (today.getMonth()+1)).slice(-2);
-      const d = ('0' + today.getDate()).slice(-2);
-      document.getElementById('reportDate').value = `${y}-${m}-${d}`;
+      const year = today.getFullYear();
+      const month = ('0' + (today.getMonth() + 1)).slice(-2);
+      const day = ('0' + today.getDate()).slice(-2);
+      const formattedDate = year + '-' + month + '-' + day;
+      document.getElementById('reportDate').value = formattedDate;
     }
+
     function updateTime() {
-      const sel = document.getElementById('reportTimeSelect');
-      const free = document.getElementById('freeTimeInput');
-      if (!sel.value) free.disabled = false;
-      else {
-        free.disabled = true;
-        free.value = sel.value;
+      const timeSelect = document.getElementById("reportTimeSelect");
+      const freeTimeInput = document.getElementById("freeTimeInput");
+
+      if (timeSelect.value === "") {
+        freeTimeInput.disabled = false;
+      } else {
+        freeTimeInput.disabled = true;
+      }
+
+      if (timeSelect.value !== "") {
+        document.getElementById("freeTimeInput").value = timeSelect.value;
       }
     }
+
     let subject = '';
-    function setSubject(s) {
-      subject = s;
+    function setSubject(selectedSubject) {
+      subject = selectedSubject;
       updateNextLessonOutput();
     }
+
     function updateNextLessonOutput() {
-      const date = document.getElementById('nextLessonDate').value;
-      const out = document.getElementById('nextLessonOutput');
-      if (date && subject) {
-        const dt = new Date(date);
-        const opt = { weekday:'short', year:'numeric', month:'long', day:'numeric' };
-        out.textContent = dt.toLocaleDateString('ja-JP', opt) + ' - ' + subject;
-      } else out.textContent = '';
+      const nextLessonDate = document.getElementById('nextLessonDate').value;
+      if (nextLessonDate && subject) {
+        const date = new Date(nextLessonDate);
+        const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('ja-JP', options);
+        document.getElementById('nextLessonOutput').textContent = `${formattedDate} - ${subject}`;
+      } else {
+        document.getElementById('nextLessonOutput').textContent = '';
+      }
     }
 
     function copyReport() {
-      /* 既存の copyReport() はそのまま */
       var reportDate = document.getElementById("reportDate").value;
       var reportTime = document.getElementById("reportTimeSelect").value;
       var freeTimeInput = document.getElementById("freeTimeInput").value;
       var reportTeacher = document.getElementById("reportTeacher").value;
       var reportWorkDone = "=" + document.getElementById("reportWorkDone").value
-                                         .split(/\r?\n/).map(l=>`"${l}"`).join('&CHAR(10)&');
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
       var reportUnderstanding = "=" + document.getElementById("reportUnderstanding").value
-                                         .split(/\r?\n/).map(l=>`"${l}"`).join('&CHAR(10)&');
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
       var reportHomework = "=" + document.getElementById("reportHomework").value
-                                         .split(/\r?\n/).map(l=>`"${l}"`).join('&CHAR(10)&');
+                                         .split(/\r?\n/) // 改行で分割
+                                         .map(line => `"${line}"`) // 各行をダブルクォーテーションで囲む
+                                         .join('&CHAR(10)&'); // 各行を &CHAR(10)& で結合
       var reportNextLesson = document.getElementById("nextLessonOutput").textContent;
-      var reportTimeFinal = reportTime || freeTimeInput;
-      const days = ['日','月','火','水','木','金','土'];
-      const obj = new Date(reportDate);
-      const fDate = reportDate + " (" + days[obj.getDay()] + ")";
-      var text = `${fDate}\r\n${reportTimeFinal}\r\n${reportTeacher}\r\n${reportWorkDone.replace(/\n/g,"\r\n")}\r\n${reportUnderstanding.replace(/\n/g,"\r\n")}\r\n${reportHomework.replace(/\n/g,"\r\n")}\r\n${reportNextLesson}`;
+
+      var reportTimeFinal = reportTime === "" ? freeTimeInput : reportTime;
+
+      const dateObj = new Date(reportDate);
+      const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+      const formattedDate = reportDate + " (" + daysOfWeek[dateObj.getDay()] + ")";
+
+      var reportWorkDoneFormatted = reportWorkDone.replace(/\n/g, "\r\n");
+      var reportUnderstandingFormatted = reportUnderstanding.replace(/\n/g, "\r\n");
+      var reportHomeworkFormatted = reportHomework.replace(/\n/g, "\r\n");
+
+      // テーブル形式で縦に並べる
+      var reportText = `${formattedDate}\r\n${reportTimeFinal}\r\n${reportTeacher}\r\n${reportWorkDoneFormatted}\r\n${reportUnderstandingFormatted}\r\n${reportHomeworkFormatted}\r\n${reportNextLesson}`;
+
+      // エクセルに貼り付ける形式（タブ区切り）
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text)
-          .then(()=>alert("テキストがコピーされました! Excelにペーストできます。"))
-          .catch(err=>alert("コピーに失敗しました: "+err));
-      } else {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        Object.assign(ta.style, {
-          position:"fixed",top:0,left:0,width:"2em",height:"2em",
-          padding:0,border:"none",outline:"none",boxShadow:"none",background:"transparent"
+        navigator.clipboard.writeText(reportText).then(function() {
+          alert("テキストがコピーされました! Excelにペーストできます。");
+        }, function(err) {
+          alert("コピーに失敗しました: " + err);
         });
-        document.body.appendChild(ta);
-        ta.focus(); ta.select();
+      } else {
+        var textArea = document.createElement("textarea");
+        textArea.value = reportText;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
         try {
-          document.execCommand('copy') ?
-            alert("テキストがコピーされました! Excelにペーストできます。") :
+          var successful = document.execCommand('copy');
+          if(successful) {
+            alert("テキストがコピーされました! Excelにペーストできます。");
+          } else {
             alert("コピーに失敗しました。");
-        } catch(e) {
-          alert("コピーに失敗しました: "+e);
+          }
+        } catch (err) {
+          alert("コピーに失敗しました: " + err);
         }
-        document.body.removeChild(ta);
+        document.body.removeChild(textArea);
       }
-    }
-
-    function exportToJPEG() {
-      // テーブルを組み立て
-      const data = [];
-      // 日付だけ YYYY/MM/DD 形式
-      const rawDate = document.getElementById('reportDate').value.replace(/-/g,'/');
-      data.push({ label:'日付', value:rawDate });
-      // 時間
-      const tsel = document.getElementById('reportTimeSelect').value;
-      const tfree = document.getElementById('freeTimeInput').value;
-      data.push({ label:'時間', value:(tsel||tfree) });
-      // 担当
-      data.push({ label:'担当', value:document.getElementById('reportTeacher').value });
-      // テキストエリア系は改行を<br>で
-      ['reportWorkDone','reportUnderstanding','reportHomework'].forEach(id=>{
-        const lbl = {
-          reportWorkDone:'今日行ったこと',
-          reportUnderstanding:'生徒の理解が十分・不十分だった点',
-          reportHomework:'宿題・学習習慣・学習姿勢について'
-        }[id];
-        const raw = document.getElementById(id).value;
-        const html = raw.split(/\r?\n/).map(line=>line||' ').join('<br>');
-        data.push({ label:lbl, value:html, isHtml:true });
-      });
-      // 次回の授業
-      data.push({ label:'次回の授業', value:document.getElementById('nextLessonOutput').textContent });
-
-      // テーブル生成
-      const tblDiv = document.getElementById('reportTable');
-      let html = '<table>';
-      data.forEach(row=>{
-        html += `<tr><td class="label">${row.label}</td>`;
-        html += `<td class="value"${row.isHtml? '':' style="white-space:pre-wrap;"'}>${ row.isHtml? row.value : row.value.replace(/</g,'&lt;').replace(/>/g,'&gt;') }</td></tr>`;
-      });
-      html += '</table>';
-      tblDiv.innerHTML = html;
-      tblDiv.style.display = 'block';
-
-      // inline style 上書き（rgb() 固定化）
-      [tblDiv, ...tblDiv.querySelectorAll('*')].forEach(el=>{
-        const cs = window.getComputedStyle(el);
-        el.style.color           = cs.color;
-        el.style.backgroundColor = cs.backgroundColor;
-        el.style.borderColor     = cs.borderColor;
-      });
-
-      // キャプチャ
-      html2canvas(tblDiv).then(canvas=>{
-        const link = document.createElement('a');
-        link.download = 'report.jpeg';
-        link.href = canvas.toDataURL('image/jpeg', 0.9);
-        link.click();
-      }).catch(err=>{
-        alert('JPEG 出力に失敗しました: ' + err);
-      }).finally(()=>{
-        tblDiv.style.display = 'none';
-      });
     }
   </script>
 </body>
