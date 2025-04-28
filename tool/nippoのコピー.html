@@ -10,6 +10,8 @@
       margin: 0;
       padding: 20px;
       background-color: #f9f9f9;
+      /* 下部固定用の余白を用意 */
+      padding-bottom: 40px;
     }
     .container {
       max-width: 600px;
@@ -62,6 +64,7 @@
     button:hover {
       background-color: #0056b3;
     }
+    /* ページ下部に固定表示する小さなテキスト */
     #copyright {
       position: fixed;
       bottom: 0;
@@ -77,8 +80,13 @@
       text-decoration: none;
     }
     @media (max-width: 600px) {
-      body { padding: 10px; }
-      .container { padding: 15px; }
+      body {
+        padding: 10px;
+        padding-bottom: 40px;
+      }
+      .container {
+        padding: 15px;
+      }
       .date-wrapper {
         flex-direction: column;
         align-items: stretch;
@@ -98,11 +106,6 @@
       
       <label for="student">生徒：</label>
       <input type="text" id="student" name="student" placeholder="生徒の名前を入力" required>
-
-      <!-- ここから追加 -->
-      <label for="lessonLink">授業リンク：</label>
-      <input type="text" id="lessonLink" name="lessonLink" placeholder="授業リンクを入力">
-      <!-- ここまで追加 -->
       
       <label for="lessonFeedback">授業の反省、改善点：</label>
       <textarea id="lessonFeedback" name="lessonFeedback" placeholder="授業の反省や改善点を入力" required></textarea>
@@ -117,57 +120,77 @@
     </form>
   </div>
 
+  <div id="copyright">
+    <a href="https://www.yukiotsue.com" target="_blank">©︎yukiotsue</a>
+  </div>
+
   <script>
+    // 今日の日付をyyyy-mm-dd形式で取得してセットする関数
     function setToday() {
       const today = new Date();
       const year = today.getFullYear();
       const month = ('0' + (today.getMonth() + 1)).slice(-2);
       const day = ('0' + today.getDate()).slice(-2);
-      document.getElementById('reportDate').value = `${year}-${month}-${day}`;
+      const formattedDate = year + '-' + month + '-' + day;
+      document.getElementById('reportDate').value = formattedDate;
     }
 
     function copyReport() {
-      const reportDate = document.getElementById("reportDate").value;
-      let dayOfWeekStr = "";
+      // 日付フィールドの値を取得
+      var reportDate = document.getElementById("reportDate").value;
+      var dayOfWeekStr = "";
       if (reportDate) {
-        const dateObj = new Date(reportDate);
-        const days = ["日", "月", "火", "水", "木", "金", "土"];
-        dayOfWeekStr = `（${days[dateObj.getDay()]}）`;
+        // 入力された日付から曜日を算出（0:日曜日～6:土曜日）
+        var dateObj = new Date(reportDate);
+        var days = ["日", "月", "火", "水", "木", "金", "土"];
+        dayOfWeekStr = "（" + days[dateObj.getDay()] + "）";
       }
-
-      const student = document.getElementById("student").value;
-      const lessonLink = document.getElementById("lessonLink").value;
-      const lessonFeedback = document.getElementById("lessonFeedback").value;
-      const otherTasks = document.getElementById("otherTasks").value;
-      const notices = document.getElementById("notices").value;
-
-      let reportText =
-        `・日付：${reportDate}${dayOfWeekStr}\n` +
-        `・生徒：${student}\n`;
-
-      if (lessonLink) {
-        reportText += `・授業リンク：${lessonLink}\n`;
-      }
-
-      reportText +=
-        `・授業の反省、改善点：${lessonFeedback}\n` +
-        `・それ以外の業務：${otherTasks}\n` +
-        `・連絡事項：${notices}`;
-
+      
+      var student = document.getElementById("student").value;
+      var lessonFeedback = document.getElementById("lessonFeedback").value;
+      var otherTasks = document.getElementById("otherTasks").value;
+      var notices = document.getElementById("notices").value;
+      
+      // 指定のフォーマットに合わせてテキストを組み立てる
+      var reportText = "・日付：" + reportDate + dayOfWeekStr + "\n" +
+                       "・生徒：" + student + "\n" +
+                       "・授業の反省、改善点：" + lessonFeedback + "\n" +
+                       "・それ以外の業務：" + otherTasks + "\n" +
+                       "・連絡事項：" + notices;
+      
+      // Clipboard APIを利用してテキストをコピー
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(reportText)
-          .then(() => alert("テキストがコピーされました!"))
-          .catch(err => alert("コピーに失敗しました: " + err));
+        navigator.clipboard.writeText(reportText).then(function() {
+          alert("テキストがコピーされました!");
+        }, function(err) {
+          alert("コピーに失敗しました: " + err);
+        });
       } else {
-        const textArea = document.createElement("textarea");
+        // Clipboard APIが使えない場合はフォールバック処理
+        var textArea = document.createElement("textarea");
         textArea.value = reportText;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
         document.body.appendChild(textArea);
+        textArea.focus();
         textArea.select();
         try {
-          document.execCommand('copy');
-          alert("テキストがコピーされました!");
-        } catch {
-          alert("コピーに失敗しました。");
+          var successful = document.execCommand('copy');
+          if(successful) {
+            alert("テキストがコピーされました!");
+          } else {
+            alert("コピーに失敗しました。");
+          }
+        } catch (err) {
+          alert("コピーに失敗しました: " + err);
         }
         document.body.removeChild(textArea);
       }
