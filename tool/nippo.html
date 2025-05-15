@@ -95,24 +95,27 @@
         <input type="date" id="reportDate" name="reportDate" required>
         <button type="button" onclick="setToday()">今日の日付を適用</button>
       </div>
-      
+
       <label for="student">生徒：</label>
       <input type="text" id="student" name="student" placeholder="生徒の名前を入力" required>
 
       <!-- ここから追加 -->
-      <label for="lessonLink">授業リンク：</label>
-      <input type="text" id="lessonLink" name="lessonLink" placeholder="授業リンクを入力">
+      <label for="lessonLink1">授業リンク1：</label>
+      <input type="text" id="lessonLink1" name="lessonLink1" placeholder="授業リンク1を入力">
+
+      <label for="lessonLink2">授業リンク2：</label>
+      <input type="text" id="lessonLink2" name="lessonLink2" placeholder="授業リンク2を入力">
       <!-- ここまで追加 -->
-      
+
       <label for="lessonFeedback">授業の反省、改善点：</label>
       <textarea id="lessonFeedback" name="lessonFeedback" placeholder="授業の反省や改善点を入力" required></textarea>
-      
+
       <label for="otherTasks">それ以外の業務：</label>
       <textarea id="otherTasks" name="otherTasks" placeholder="その他の業務内容を入力" required></textarea>
-      
+
       <label for="notices">連絡事項：</label>
       <textarea id="notices" name="notices" placeholder="連絡事項を入力" required></textarea>
-      
+
       <button type="button" onclick="copyReport()">テキストをコピー</button>
     </form>
   </div>
@@ -136,7 +139,8 @@
       }
 
       const student = document.getElementById("student").value;
-      const lessonLink = document.getElementById("lessonLink").value;
+      const lessonLink1 = document.getElementById("lessonLink1").value;
+      const lessonLink2 = document.getElementById("lessonLink2").value;
       const lessonFeedback = document.getElementById("lessonFeedback").value;
       const otherTasks = document.getElementById("otherTasks").value;
       const notices = document.getElementById("notices").value;
@@ -145,8 +149,11 @@
         `・日付：${reportDate}${dayOfWeekStr}\n` +
         `・生徒：${student}\n`;
 
-      if (lessonLink) {
-        reportText += `・授業リンク：${lessonLink}\n`;
+      if (lessonLink1) {
+        reportText += `・授業リンク1：${lessonLink1}\n`;
+      }
+      if (lessonLink2) {
+        reportText += `・授業リンク2：${lessonLink2}\n`;
       }
 
       reportText +=
