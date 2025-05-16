@@ -10,8 +10,6 @@
       margin: 0;
       padding: 20px;
       background-color: #f9f9f9;
-      /* 下部固定用の余白を用意 */
-      padding-bottom: 40px;
     }
     .container {
       max-width: 600px;
@@ -64,7 +62,6 @@
     button:hover {
       background-color: #0056b3;
     }
-    /* ページ下部に固定表示する小さなテキスト */
     #copyright {
       position: fixed;
       bottom: 0;
@@ -80,13 +77,8 @@
       text-decoration: none;
     }
     @media (max-width: 600px) {
-      body {
-        padding: 10px;
-        padding-bottom: 40px;
-      }
-      .container {
-        padding: 15px;
-      }
+      body { padding: 10px; }
+      .container { padding: 15px; }
       .date-wrapper {
         flex-direction: column;
         align-items: stretch;
@@ -103,94 +95,86 @@
         <input type="date" id="reportDate" name="reportDate" required>
         <button type="button" onclick="setToday()">今日の日付を適用</button>
       </div>
-      
+
       <label for="student">生徒：</label>
       <input type="text" id="student" name="student" placeholder="生徒の名前を入力" required>
-      
+
+      <!-- ここから追加 -->
+      <label for="lessonLink1">授業リンク1：</label>
+      <input type="text" id="lessonLink1" name="lessonLink1" placeholder="授業リンク1を入力">
+
+      <label for="lessonLink2">授業リンク2：</label>
+      <input type="text" id="lessonLink2" name="lessonLink2" placeholder="授業リンク2を入力">
+      <!-- ここまで追加 -->
+
       <label for="lessonFeedback">授業の反省、改善点：</label>
       <textarea id="lessonFeedback" name="lessonFeedback" placeholder="授業の反省や改善点を入力" required></textarea>
-      
+
       <label for="otherTasks">それ以外の業務：</label>
       <textarea id="otherTasks" name="otherTasks" placeholder="その他の業務内容を入力" required></textarea>
-      
+
       <label for="notices">連絡事項：</label>
       <textarea id="notices" name="notices" placeholder="連絡事項を入力" required></textarea>
-      
+
       <button type="button" onclick="copyReport()">テキストをコピー</button>
     </form>
   </div>
 
-  <div id="copyright">
-    <a href="https://www.yukiotsue.com" target="_blank">©︎yukiotsue</a>
-  </div>
-
   <script>
-    // 今日の日付をyyyy-mm-dd形式で取得してセットする関数
     function setToday() {
       const today = new Date();
       const year = today.getFullYear();
       const month = ('0' + (today.getMonth() + 1)).slice(-2);
       const day = ('0' + today.getDate()).slice(-2);
-      const formattedDate = year + '-' + month + '-' + day;
-      document.getElementById('reportDate').value = formattedDate;
+      document.getElementById('reportDate').value = `${year}-${month}-${day}`;
     }
 
     function copyReport() {
-      // 日付フィールドの値を取得
-      var reportDate = document.getElementById("reportDate").value;
-      var dayOfWeekStr = "";
+      const reportDate = document.getElementById("reportDate").value;
+      let dayOfWeekStr = "";
       if (reportDate) {
-        // 入力された日付から曜日を算出（0:日曜日～6:土曜日）
-        var dateObj = new Date(reportDate);
-        var days = ["日", "月", "火", "水", "木", "金", "土"];
-        dayOfWeekStr = "（" + days[dateObj.getDay()] + "）";
+        const dateObj = new Date(reportDate);
+        const days = ["日", "月", "火", "水", "木", "金", "土"];
+        dayOfWeekStr = `（${days[dateObj.getDay()]}）`;
       }
-      
-      var student = document.getElementById("student").value;
-      var lessonFeedback = document.getElementById("lessonFeedback").value;
-      var otherTasks = document.getElementById("otherTasks").value;
-      var notices = document.getElementById("notices").value;
-      
-      // 指定のフォーマットに合わせてテキストを組み立てる
-      var reportText = "・日付：" + reportDate + dayOfWeekStr + "\n" +
-                       "・生徒：" + student + "\n" +
-                       "・授業の反省、改善点：" + lessonFeedback + "\n" +
-                       "・それ以外の業務：" + otherTasks + "\n" +
-                       "・連絡事項：" + notices;
-      
-      // Clipboard APIを利用してテキストをコピー
+
+      const student = document.getElementById("student").value;
+      const lessonLink1 = document.getElementById("lessonLink1").value;
+      const lessonLink2 = document.getElementById("lessonLink2").value;
+      const lessonFeedback = document.getElementById("lessonFeedback").value;
+      const otherTasks = document.getElementById("otherTasks").value;
+      const notices = document.getElementById("notices").value;
+
+      let reportText =
+        `・日付：${reportDate}${dayOfWeekStr}\n` +
+        `・生徒：${student}\n`;
+
+      if (lessonLink1) {
+        reportText += `・授業リンク1：${lessonLink1}\n`;
+      }
+      if (lessonLink2) {
+        reportText += `・授業リンク2：${lessonLink2}\n`;
+      }
+
+      reportText +=
+        `・授業の反省、改善点：${lessonFeedback}\n` +
+        `・それ以外の業務：${otherTasks}\n` +
+        `・連絡事項：${notices}`;
+
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(reportText).then(function() {
-          alert("テキストがコピーされました!");
-        }, function(err) {
-          alert("コピーに失敗しました: " + err);
-        });
+        navigator.clipboard.writeText(reportText)
+          .then(() => alert("テキストがコピーされました!"))
+          .catch(err => alert("コピーに失敗しました: " + err));
       } else {
-        // Clipboard APIが使えない場合はフォールバック処理
-        var textArea = document.createElement("textarea");
+        const textArea = document.createElement("textarea");
         textArea.value = reportText;
-        textArea.style.position = "fixed";
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        textArea.style.width = "2em";
-        textArea.style.height = "2em";
-        textArea.style.padding = "0";
-        textArea.style.border = "none";
-        textArea.style.outline = "none";
-        textArea.style.boxShadow = "none";
-        textArea.style.background = "transparent";
         document.body.appendChild(textArea);
-        textArea.focus();
         textArea.select();
         try {
-          var successful = document.execCommand('copy');
-          if(successful) {
-            alert("テキストがコピーされました!");
-          } else {
-            alert("コピーに失敗しました。");
-          }
-        } catch (err) {
-          alert("コピーに失敗しました: " + err);
+          document.execCommand('copy');
+          alert("テキストがコピーされました!");
+        } catch {
+          alert("コピーに失敗しました。");
         }
         document.body.removeChild(textArea);
       }

@@ -146,20 +146,20 @@
       const notices = document.getElementById("notices").value;
 
       let reportText =
-        `・日付：${reportDate}${dayOfWeekStr}\n` +
-        `・生徒：${student}\n`;
+        `- 日付：${reportDate}${dayOfWeekStr}\n` +
+        `- 生徒：${student}\n`;
 
       if (lessonLink1) {
-        reportText += `・授業リンク1：${lessonLink1}\n`;
+        reportText += `- 授業リンク1：${lessonLink1}\n`;
       }
       if (lessonLink2) {
-        reportText += `・授業リンク2：${lessonLink2}\n`;
+        reportText += `- 授業リンク2：${lessonLink2}\n`;
       }
 
       reportText +=
-        `・授業の反省、改善点：${lessonFeedback}\n` +
-        `・それ以外の業務：${otherTasks}\n` +
-        `・連絡事項：${notices}`;
+        `- 授業の反省、改善点：${lessonFeedback}\n` +
+        `- それ以外の業務：${otherTasks}\n` +
+        `- 連絡事項：${notices}`;
 
       if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(reportText)
