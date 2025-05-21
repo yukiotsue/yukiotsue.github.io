@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>報告ノベール</title>
+
+  <!-- Google Fonts: Noto Sans JP 読み込み -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -107,9 +111,10 @@
       background-color: #218838;
     }
 
-    /* レポート用テーブル */
+    /* 出力画像専用フォント適用 */
     #reportTable {
       display: none;
+      font-family: 'Noto Sans JP', sans-serif;
       width: 100%;
       max-width: 600px;
       margin: 20px auto;
@@ -135,7 +140,6 @@
     }
   </style>
 
-  <!-- html2canvas を読み込む -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
@@ -186,14 +190,11 @@
         <div id="nextLessonOutput" class="output" contenteditable="true"></div>
       </div>
 
-      <!-- 既存のコピー用ボタン -->
       <button type="button" onclick="copyReport()">テキストをコピー</button>
-      <!-- 追加したJPEG出力ボタン -->
       <button type="button" onclick="exportToJPEG()">画像として保存</button>
     </form>
   </div>
 
-  <!-- レポート用テーブル（キャプチャ用） -->
   <div id="reportTable"></div>
 
   <script>
@@ -227,9 +228,7 @@
         out.textContent = dt.toLocaleDateString('ja-JP', opt) + ' - ' + subject;
       } else out.textContent = '';
     }
-
     function copyReport() {
-      /* 既存の copyReport() はそのまま */
       var reportDate = document.getElementById("reportDate").value;
       var reportTime = document.getElementById("reportTimeSelect").value;
       var freeTimeInput = document.getElementById("freeTimeInput").value;
@@ -271,18 +270,13 @@
     }
 
     function exportToJPEG() {
-      // テーブルを組み立て
       const data = [];
-      // 日付だけ YYYY/MM/DD 形式
       const rawDate = document.getElementById('reportDate').value.replace(/-/g,'/');
       data.push({ label:'日付', value:rawDate });
-      // 時間
       const tsel = document.getElementById('reportTimeSelect').value;
       const tfree = document.getElementById('freeTimeInput').value;
       data.push({ label:'時間', value:(tsel||tfree) });
-      // 担当
       data.push({ label:'担当', value:document.getElementById('reportTeacher').value });
-      // テキストエリア系は改行を<br>で
       ['reportWorkDone','reportUnderstanding','reportHomework'].forEach(id=>{
         const lbl = {
           reportWorkDone:'今日行ったこと',
@@ -293,10 +287,8 @@
         const html = raw.split(/\r?\n/).map(line=>line||' ').join('<br>');
         data.push({ label:lbl, value:html, isHtml:true });
       });
-      // 次回の授業
       data.push({ label:'次回の授業', value:document.getElementById('nextLessonOutput').textContent });
 
-      // テーブル生成
       const tblDiv = document.getElementById('reportTable');
       let html = '<table>';
       data.forEach(row=>{
@@ -307,7 +299,6 @@
       tblDiv.innerHTML = html;
       tblDiv.style.display = 'block';
 
-      // inline style 上書き（rgb() 固定化）
       [tblDiv, ...tblDiv.querySelectorAll('*')].forEach(el=>{
         const cs = window.getComputedStyle(el);
         el.style.color           = cs.color;
@@ -315,16 +306,17 @@
         el.style.borderColor     = cs.borderColor;
       });
 
-      // キャプチャ
-      html2canvas(tblDiv).then(canvas=>{
-        const link = document.createElement('a');
-        link.download = 'report.jpeg';
-        link.href = canvas.toDataURL('image/jpeg', 0.9);
-        link.click();
-      }).catch(err=>{
-        alert('JPEG 出力に失敗しました: ' + err);
-      }).finally(()=>{
-        tblDiv.style.display = 'none';
+      document.fonts.ready.then(() => {
+        html2canvas(tblDiv).then(canvas=>{
+          const link = document.createElement('a');
+          link.download = 'report.jpeg';
+          link.href = canvas.toDataURL('image/jpeg', 0.9);
+          link.click();
+        }).catch(err=>{
+          alert('JPEG 出力に失敗しました: ' + err);
+        }).finally(()=>{
+          tblDiv.style.display = 'none';
+        });
       });
     }
   </script>
