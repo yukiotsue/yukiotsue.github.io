@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字 to 画像</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1877f2;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            font-size: 16px;
+            min-height: 100px;
+            resize: vertical;
+        }
+        textarea:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+            outline: none;
+        }
+        .controls-area {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        #imageContainer {
+            margin-top: 0;
+            padding: 15px;
+            border: 1px dashed #dddfe2;
+            border-radius: 6px;
+            min-height: 80px;
+            background-color: #f7f8fa;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        #imageContainer img {
+            width: 64px;
+            height: 64px;
+            margin: 0;
+            border: 1px solid #dddfe2;
+            border-radius: 4px;
+            background-color: #fff;
+            object-fit: contain;
+        }
+        #placeholderText {
+            color: #606770;
+            font-style: italic;
+            width: 100%;
+            text-align: center;
+        }
+        .button-container {
+            text-align: right;
+            flex-grow: 1;
+        }
+        button {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out;
+        }
+        button.primary {
+            background-color: #42b72a;
+        }
+        button.primary:hover:not(:disabled) {
+            background-color: #36a420;
+        }
+        button.secondary {
+             background-color: #1877f2;
+        }
+        button.secondary:hover:not(:disabled) {
+            background-color: #166fe5;
+        }
+        button:disabled {
+            background-color: #e4e6eb;
+            color: #bcc0c4;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>文字 to 画像</h1>
+        <textarea id="inputText" rows="5" placeholder="ここに変換したいテキストを入力してください。"></textarea>
+
+        <div class="controls-area">
+            <button id="generateButton" class="primary">画像生成 (確定)</button>
+            <div class="button-container">
+                 <button id="downloadAllButton" class="secondary" disabled>選択画像をZIPでダウンロード</button>
+            </div>
+        </div>
+
+        <div id="imageContainer">
+            <p id="placeholderText">テキストを入力し、「画像生成」ボタンを押してください。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputText = document.getElementById('inputText');
+            const imageContainer = document.getElementById('imageContainer');
+            const generateButton = document.getElementById('generateButton');
+            const downloadAllButton = document.getElementById('downloadAllButton');
+            const placeholderText = document.getElementById('placeholderText');
+            const imageSize = 64;
+            let generatedCanvases = [];
+
+            function clearImages() {
+                while (imageContainer.firstChild && imageContainer.firstChild !== placeholderText) {
+                    imageContainer.removeChild(imageContainer.firstChild);
+                }
+                generatedCanvases = [];
+                placeholderText.style.display = 'block';
+                downloadAllButton.disabled = true;
+            }
+
+            // ファイル名として不適切な文字を置換する関数
+            function sanitizeCharForFilename(char) {
+                if (char === ' ') return '_space_'; // スペースは特別扱いしても良い
+                // Windowsの禁止文字: \ / : * ? " < > |
+                // 他、制御文字やピリオドの扱いなども考慮すると複雑になるが、ここでは基本的なもののみ
+                let sanitized = char.replace(/[\\/:*?"<>|]/g, '_');
+                // ファイル名が空、またはピリオドのみになるのを防ぐ (簡易処理)
+                if (sanitized === '' || sanitized === '.' || sanitized === '..') {
+                    return `_char_(${char.charCodeAt(0)})_`; // Unicodeポイントなどで代替
+                }
+                return sanitized;
+            }
+
+            function generateImagesAndUpdateUI() {
+                const text = inputText.value;
+                clearImages();
+
+                if (text.trim() === "") {
+                    placeholderText.textContent = 'テキストが入力されていません。文字を入力してください。';
+                    return;
+                }
+
+                placeholderText.style.display = 'none';
+                const processedChars = new Set(); // 処理済みの文字を記録
+
+                for (let i = 0; i < text.length; i++) {
+                    const originalChar = text.charAt(i);
+
+                    // すでに処理済みの文字はスキップ
+                    if (processedChars.has(originalChar)) {
+                        continue;
+                    }
+                    processedChars.add(originalChar);
+
+                    const sanitizedCharPart = sanitizeCharForFilename(originalChar);
+                    const filename = `char_${sanitizedCharPart}.png`;
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = imageSize;
+                    canvas.height = imageSize;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, imageSize, imageSize);
+
+                    ctx.fillStyle = 'black';
+                    const fontSize = Math.floor(imageSize * 0.7);
+                    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(originalChar, imageSize / 2, imageSize / 2 + (fontSize * 0.08));
+
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL('image/png');
+                    img.alt = `生成画像: ${originalChar}`;
+                    img.title = `文字: ${originalChar} (ファイル名: ${filename})`;
+                    imageContainer.appendChild(img);
+
+                    generatedCanvases.push({ filename: filename, canvas: canvas });
+                }
+
+                if (generatedCanvases.length > 0) {
+                    downloadAllButton.disabled = false;
+                    downloadAllButton.textContent = `${generatedCanvases.length}画像をZIPでダウンロード`;
+                } else {
+                    placeholderText.textContent = '表示できるユニークな文字がありませんでした。';
+                    placeholderText.style.display = 'block';
+                    downloadAllButton.textContent = `選択画像をZIPでダウンロード`;
+                }
+            }
+
+            generateButton.addEventListener('click', generateImagesAndUpdateUI);
+
+            downloadAllButton.addEventListener('click', () => {
+                if (generatedCanvases.length === 0) {
+                    alert("ダウンロードする画像がありません。まず画像を生成してください。");
+                    return;
+                }
+
+                const zip = new JSZip();
+                generatedCanvases.forEach(item => {
+                    const imageDataURL = item.canvas.toDataURL('image/png').split(',')[1];
+                    if(imageDataURL) {
+                        zip.file(item.filename, imageDataURL, { base64: true });
+                    }
+                });
+
+                zip.generateAsync({ type: "blob" })
+                    .then(function(content) {
+                        saveAs(content, "character_images_unique.zip");
+                    })
+                    .catch(function(error) {
+                        console.error("ZIPファイルの生成またはダウンロードに失敗しました:", error);
+                        alert("ZIPファイルの生成またはダウンロードに失敗しました。コンソールで詳細を確認してください。");
+                    });
+            });
+
+            clearImages();
+            placeholderText.textContent = 'テキストを入力し、「画像生成」ボタンを押してください。';
+        });
+    </script>
+</body>
+</html>
