@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>授業報告書クリーナー</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    body { font-family: "Segoe UI", sans-serif; padding: 30px; background: #f0f2f5; color: #333; }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    input[type="file"], button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    input[type="file"] {
+      background: #ecf0f1;
+      color: #333;
+    }
+    button {
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #dfe6e9;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      white-space: pre-wrap;
+    }
+    th {
+      background: #2980b9;
+      color: #fff;
+      position: sticky;
+      top: 0;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>📘 授業報告書クリーナー</h1>
+  <input type="file" id="csvFile" accept=".csv">
+  <button onclick="processCSV()">📂 整形して表示</button>
+  <button id="downloadBtn" onclick="downloadCSV()" style="display:none;">⬇️ CSVダウンロード</button>
+  <table id="resultTable"></table>
+</div>
+
+<script>
+let extractedData = [];
+const outputHeaders = ["日付", "時間", "担当", "今日行ったこと", "生徒の理解", "宿題・習慣・姿勢", "次回の授業"];
+
+function extractField(text, label) {
+  const match = text.match(new RegExp(`\\*\\*${label}：\\*\\*\\s*([\\s\\S]*?)(?=\\n\\*\\*[^：]+：\\*\\*|\\n[-]{5,}|$)`));
+  return match ? match[1].trim() : '';
+}
+
+function parseReport(content) {
+  return {
+    "日付": extractField(content, "日付"),
+    "時間": extractField(content, "時間"),
+    "担当": extractField(content, "担当"),
+    "今日行ったこと": extractField(content, "今日行ったこと"),
+    "生徒の理解": extractField(content, "生徒の理解が十分・不十分だった点"),
+    "宿題・習慣・姿勢": extractField(content, "宿題・学習習慣・学習姿勢について"),
+    "次回の授業": extractField(content, "次回の授業")
+  };
+}
+
+function processCSV() {
+  const fileInput = document.getElementById("csvFile").files[0];
+  if (!fileInput) return alert("ファイルを選択してください。");
+
+  Papa.parse(fileInput, {
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      const rows = results.data;
+      extractedData = rows.map(row => {
+        const content = row["content"] || row["Content"] || "";
+        return parseReport(content);
+      });
+      renderTable();
+      document.getElementById("downloadBtn").style.display = 'inline-block';
+    }
+  });
+}
+
+function renderTable() {
+  const table = document.getElementById("resultTable");
+  table.innerHTML = "";
+  const thead = document.createElement("thead");
+  const tr = document.createElement("tr");
+  outputHeaders.forEach(h => {
+    const th = document.createElement("th");
+    th.textContent = h;
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  extractedData.forEach(row => {
+    const tr = document.createElement("tr");
+    outputHeaders.forEach(h => {
+      const td = document.createElement("td");
+      td.textContent = row[h] || '';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+}
+
+function downloadCSV() {
+  const csvRows = [outputHeaders.join(",")];
+  extractedData.forEach(row => {
+    const line = outputHeaders.map(h => {
+      let val = row[h] || '';
+      if (val.includes(',') || val.includes('\n') || val.includes('"')) {
+        val = '"' + val.replace(/"/g, '""') + '"';
+      }
+      return val;
+    }).join(',');
+    csvRows.push(line);
+  });
+  const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "授業報告_整形済み.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+</script>
+</body>
+</html>
