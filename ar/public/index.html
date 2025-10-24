@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MindAR Multi Marker Sample</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page__header">
+        <h1>MindAR 3 Marker Demo</h1>
+        <p>「Start AR」を押してカメラへのアクセスを許可し、3種類のマーカーを同時に読み込んでみましょう。</p>
+      </header>
+      <section class="page__content">
+        <div id="ar-container" class="ar-container">
+          <div class="ar-overlay" id="ar-overlay">
+            <button id="start-button" class="primary-button">Start AR</button>
+            <p class="hint">カメラが起動しない場合は、ページを再読み込みしてください。</p>
+          </div>
+        </div>
+        <aside class="markers">
+          <h2>ダウンロード用マーカー</h2>
+          <ul>
+            <li><a href="../markers/marker1.png" download>marker1.png</a></li>
+            <li><a href="../markers/marker2.png" download>marker2.png</a></li>
+            <li><a href="../markers/marker3.png" download>marker3.png</a></li>
+          </ul>
+          <p class="note">印刷するか、別デバイスに表示して読み込んでください。コントラストが高い環境での使用を推奨します。</p>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "mindar-multi-marker-sample",
+  "version": "1.0.0",
+  "description": "Sample web app demonstrating MindAR with three simultaneous image markers.",
+  "type": "module",
+  "scripts": {
+    "generate:targets": "node ./scripts/generate-targets.js",
+    "serve": "http-server public --open"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "mind-ar": "^1.1.5"
+  }
+}
