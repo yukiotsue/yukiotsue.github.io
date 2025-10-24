@@ -1,5 +1,5 @@
 import { OfflineCompiler } from 'mind-ar/src/image-target/offline-compiler.js';
-import { writeFile } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 import { loadImage } from 'canvas';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
@@ -22,7 +22,9 @@ async function generate() {
   await compiler.compileImageTargets(images, (info) => console.log(info));
   const buffer = compiler.exportData();
 
-  const output = resolve(__dirname, '..', 'public', 'assets', 'multi-targets.mind');
+  const outputDir = resolve(__dirname, '..', 'assets');
+  await mkdir(outputDir, { recursive: true });
+  const output = resolve(outputDir, 'multi-targets.mind');
   await writeFile(output, buffer);
   console.log(`Generated ${output}`);
 }

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "generate:targets": "node ./scripts/generate-targets.js",
-    "serve": "http-server public --open"
+    "serve": "http-server . --open"
   },
   "devDependencies": {
     "http-server": "^14.1.1",
