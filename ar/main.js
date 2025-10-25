@@ -1,9 +1,10 @@
-const { MindARThree } = window.MINDAR;
-const { THREE } = window;
+import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
 
 const container = document.querySelector('#ar-container');
 const startButton = document.querySelector('#start-button');
 const overlay = document.querySelector('#ar-overlay');
+const hint = overlay.querySelector('.hint');
 
 const anchorsConfig = [
   { index: 0, color: 0xff3b30, label: 'Marker 1', height: 0.1 },
@@ -112,7 +113,8 @@ async function setup() {
       renderer.setAnimationLoop(render);
     } catch (error) {
       overlay.style.display = 'flex';
-      overlay.querySelector('.hint').textContent = 'カメラにアクセスできませんでした。ブラウザの設定をご確認ください。';
+      const reason = error?.message || error?.name || '不明なエラー';
+      hint.textContent = `カメラにアクセスできませんでした (${reason})。ブラウザの設定をご確認ください。`;
       console.error(error);
     }
   });
@@ -126,4 +128,9 @@ async function setup() {
   });
 }
 
-setup();
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  startButton.disabled = true;
+  hint.textContent = 'このブラウザはカメラ機能に対応していません。別のブラウザまたは最新OSでお試しください。';
+} else {
+  setup();
+}
