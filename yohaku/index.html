@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>余白の抽出手法に関する探索的研究</title>
+  <meta name="description" content="ポスターデザインにおける余白の抽出手法に関する探索的研究の紹介 — 日本感性工学会 学生交流会" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Side Navigation -->
+  <nav class="side-nav" id="sideNav">
+    <a href="#hero" data-label="Top" class="active"></a>
+    <a href="#abstract" data-label="概要"></a>
+    <a href="#background" data-label="背景"></a>
+    <a href="#purpose" data-label="目的"></a>
+    <a href="#flow" data-label="研究の流れ"></a>
+    <a href="#line-experiment" data-label="描線ベース"></a>
+    <a href="#grid-proposal" data-label="グリッドベース"></a>
+    <a href="#results" data-label="検証結果"></a>
+    <a href="#conclusion" data-label="まとめ"></a>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">日本感性工学会 学生交流会 2026</div>
+      <h1 class="hero-title">
+        余白の抽出手法に関する探索的研究<br />
+        <span style="font-size: 0.65em; font-weight: 400; color: #86868b">－ ポスターデザインを対象として －</span>
+      </h1>
+      <p class="hero-subtitle">
+        Exploratory Study on the Extraction of White Space in Poster Design
+      </p>
+      <div class="hero-meta">
+        <span>筑波大学</span>
+        <span style="margin-top: 4px; font-size: 1rem; color: var(--text-primary); font-weight: 600">大杖 裕喜</span>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <!-- ============ ABSTRACT ============ -->
+  <section id="abstract">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Abstract</div>
+        <h2 class="section-title">研究の概要</h2>
+        <p class="section-lead">
+          視覚デザインにおける「余白」は重要な構成要素として知られていますが、余白を定量的に捉える手法は確立されていません。本研究では、ポスターデザインを対象に<span
+            class="highlight">余白の抽出手法</span>を探索的に検討しました。
+        </p>
+      </div>
+
+      <div class="conclusion-highlights">
+        <div class="highlight-item fade-in">
+          <div class="highlight-num">1</div>
+          <div class="highlight-content">
+            <h3>描線ベースの手法で余白知覚の特徴を発見</h3>
+            <p>
+              参加者に余白を描線で囲ませる手法により、余白の知覚に4つの特徴的パターンを確認。余白は単なる物理的空白ではなく、オブジェクトとの関係性において意味づけられる感性的領域であることが分かりました。
+            </p>
+          </div>
+        </div>
+
+        <div class="highlight-item fade-in fade-in-delay-1">
+          <div class="highlight-num">2</div>
+          <div class="highlight-content">
+            <h3>グリッドベースの手法で余白認識の定量化に成功</h3>
+            <p>
+              描線ベースの課題を解決するためグリッドベースのツールを新たに開発。定量的な比較分析が可能になり、コントラスト・背景の均一性・写真背景の有無が参加者間の一致度に影響することを特定しました。
+            </p>
+          </div>
+        </div>
+
+        <div class="highlight-item fade-in fade-in-delay-2">
+          <div class="highlight-num">3</div>
+          <div class="highlight-content">
+            <h3>余白認識の暫定的な3類型を示唆</h3>
+            <p>
+              変動係数の分析から、余白認識が「物理的特徴にもとづくもの」「視覚的知覚にもとづくもの」「意味的解釈にもとづくもの」の3類型に分類できる可能性が示されました。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="note fade-in" style="text-align: center; font-style: normal; margin-top: 24px;">
+        以下、研究の詳細をご紹介します
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ BACKGROUND ============ -->
+  <section id="background">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Background</div>
+        <h2 class="section-title">研究の背景</h2>
+      </div>
+
+      <div class="fade-in fade-in-delay-1">
+        <p class="section-lead">
+          視覚デザインにおける「余白」は重要な構成要素として認識されてきました。<br />
+          デザイン教本では<span class="highlight">余白を適切に用いることで洗練された印象を与える</span>テクニックが繰り返し紹介されています。
+        </p>
+      </div>
+
+      <div class="card fade-in fade-in-delay-2">
+        <div class="card-title">先行研究で分かっていること</div>
+        <div class="card-text">
+          <strong>パッケージデザイン</strong>では、余白比率の増加が「ラグジュアリー知覚」をもたらすこと、<strong>Webサイト</strong>では「余白感」「余白満足度」という評価構造が報告されています。一方で、<span
+            class="highlight">人が余白をどう知覚するか</span>の心理学的理解は十分ではありませんでした。
+        </div>
+      </div>
+
+      <div class="card fade-in fade-in-delay-3">
+        <div class="card-title">問題意識</div>
+        <div class="card-text">
+          村田らの先駆的研究は東洋絵画と円刺激を対象としており、<span
+            class="highlight">現代のポスターデザインのような多様な視覚表現への展開は行われていません</span>でした。また、余白がデザイン評価のどのような特性に起因するかも明らかになっていませんでした。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PURPOSE ============ -->
+  <section id="purpose">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Purpose</div>
+        <h2 class="section-title">研究目的</h2>
+        <p class="section-lead">
+          ポスターデザインにおいて、人が感性的に知覚する余白を抽出・定量化する手法を探索的に検討することを目的としました。
+        </p>
+      </div>
+
+      <div class="goals-grid">
+        <div class="goal-card fade-in">
+          <div class="goal-number">1</div>
+          <div class="goal-content">
+            <h3>描線ベースの余白抽出手法による知覚的余白の特徴解明</h3>
+            <p>
+              参加者に余白を描線で囲ませる手法により、ポスターデザインにおいて人が感覚的に知覚する余白領域を抽出し、その分布傾向と特徴を明らかにする
+            </p>
+          </div>
+        </div>
+
+        <div class="goal-card fade-in fade-in-delay-1">
+          <div class="goal-number">2</div>
+          <div class="goal-content">
+            <h3>グリッドベースの余白抽出手法の提案・実装・検証</h3>
+            <p>
+              描線ベースの課題を克服する新たな手法を提案・実装し、参加者間の一致度分析やヒートマップによるパターン分析で有効性を検証する
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLOW ============ -->
+  <section id="flow">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Research Flow</div>
+        <h2 class="section-title">研究の流れ</h2>
+      </div>
+
+      <div class="flow-diagram fade-in fade-in-delay-1">
+        <!-- Step 1 -->
+        <div class="flow-step">
+          <div class="flow-timeline">
+            <div class="flow-dot"></div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-card">
+            <h3>予備実験</h3>
+            <p>8名 × 14点のポスター画像で余白領域を描線で囲み、余白に対する意識調査を実施</p>
+            <span class="tag tag-line">描線ベース</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flow-step">
+          <div class="flow-timeline">
+            <div class="flow-dot"></div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-card">
+            <h3>本実験（実験1・実験2）</h3>
+            <p>21名 × 20点のポスター画像。印象評価（12項目 × 5段階）＋ 描線ツールによる余白抽出</p>
+            <span class="tag tag-line">描線ベース</span>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flow-step">
+          <div class="flow-timeline">
+            <div class="flow-dot"></div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-card">
+            <h3>分析</h3>
+            <p>余白の面積スコアと印象評価の相関分析、因子分析によるデザイン評価構造の解明</p>
+            <span class="tag tag-line">描線ベース</span>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flow-step">
+          <div class="flow-timeline">
+            <div class="flow-dot"></div>
+            <div class="flow-line"></div>
+          </div>
+          <div class="flow-card">
+            <h3>グリッドベースツールの提案・実装</h3>
+            <p>描線ベースの課題を解消するため、iPad専用アプリとしてグリッドベース手法を開発</p>
+            <span class="tag tag-grid">グリッドベース</span>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="flow-step">
+          <div class="flow-timeline">
+            <div class="flow-dot"></div>
+          </div>
+          <div class="flow-card">
+            <h3>検証実験</h3>
+            <p>22名 × 8点の実験刺激で余白抽出。参加者間の一致度分析、ヒートマップによるパターン分析</p>
+            <span class="tag tag-grid">グリッドベース</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LINE-BASED EXPERIMENT ============ -->
+  <section id="line-experiment">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Line-Based Method</div>
+        <h2 class="section-title">描線ベースの抽出手法</h2>
+        <p class="section-lead">
+          参加者に「余白を感じる領域」を画像上に描線で囲むよう求め、余白の知覚と分布傾向を調べました。
+        </p>
+      </div>
+
+      <!-- Tool screenshot -->
+      <figure class="img-showcase fade-in">
+        <img src="images/tool_line.png" alt="描線ベースツール" loading="lazy" style="background: #f8f8f8;" />
+        <figcaption>開発した描線ベースWebツール</figcaption>
+      </figure>
+
+      <!-- 4 Patterns -->
+      <div class="fade-in">
+        <h3 style="
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 16px;
+              margin-top: 32px;
+            ">
+          知覚された余白の4つの特徴
+        </h3>
+      </div>
+
+      <div class="pattern-list fade-in">
+        <div class="pattern-item">
+          <div class="pattern-icon">1</div>
+          <div class="pattern-text">
+            <strong>オブジェクト周囲に余白が分布</strong>し、オブジェクト自体は余白として知覚されにくい
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pattern-icon">2</div>
+          <div class="pattern-text">
+            画像の<strong>端部・角・単色領域</strong>は余白として知覚されやすい
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pattern-icon">3</div>
+          <div class="pattern-text">
+            <strong>密度の高い領域</strong>や文字列が配置された領域は余白として知覚されにくい
+          </div>
+        </div>
+        <div class="pattern-item">
+          <div class="pattern-icon">4</div>
+          <div class="pattern-text">
+            画像上の<strong>立体感・奥行き感</strong>が余白の知覚に影響を及ぼす
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribution examples -->
+      <div class="img-grid-2 fade-in" style="margin-top: 20px">
+        <figure class="img-showcase">
+          <img src="images/pattern_01.png" alt="オブジェクトを避けて分布" loading="lazy" />
+          <figcaption>
+            オブジェクトを避けて分布
+          </figcaption>
+        </figure>
+        <figure class="img-showcase">
+          <img src="images/pattern_02.png" alt="輪郭を縁取るように分布" loading="lazy" />
+          <figcaption>
+            輪郭を縁取るように分布
+          </figcaption>
+        </figure>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- ============ GRID PROPOSAL ============ -->
+  <section id="grid-proposal">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Grid-Based Method</div>
+        <h2 class="section-title">グリッドベースの抽出手法の提案</h2>
+        <p class="section-lead">
+          描線ベースツールの使用から見えた課題を踏まえて、<span class="highlight">グリッドベースの余白抽出手法</span>を新たに提案・実装しました。
+        </p>
+      </div>
+
+      <!-- Problem → Solution -->
+      <div class="comparison fade-in">
+        <div class="comparison-card problem">
+          <h3>描線ベースの課題</h3>
+          <ul>
+            <li>描画粒度のばらつき（参加者ごとに異なる描画スタイル）</li>
+            <li>描線精度と境界の曖昧さ</li>
+            <li>操作デバイスの技術的影響</li>
+          </ul>
+        </div>
+        <div class="comparison-card solution">
+          <h3>グリッドベースの改善</h3>
+          <ul>
+            <li>矩形単位の選択で描画粒度を均一化</li>
+            <li>二値的判断で境界を明確化</li>
+            <li>iPad + Apple Pencilで操作環境を標準化</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Drawing granularity examples -->
+      <div class="fade-in">
+        <h3 style="
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 8px;
+              margin-top: 32px;
+            ">
+          描画粒度のばらつき（課題の例）
+        </h3>
+        <p class="note" style="margin-bottom: 16px; margin-top: 0;">
+          同一のポスターに対して、参加者ごとに描画スタイルが大きく異なっていた
+        </p>
+      </div>
+
+      <div class="img-grid-4 fade-in">
+        <figure class="img-showcase">
+          <img src="images/drawing01.png" alt="描画例1" loading="lazy" />
+          <figcaption>描画例 1</figcaption>
+        </figure>
+        <figure class="img-showcase">
+          <img src="images/drawing02.png" alt="描画例2" loading="lazy" />
+          <figcaption>描画例 2</figcaption>
+        </figure>
+        <figure class="img-showcase">
+          <img src="images/drawing03.png" alt="描画例3" loading="lazy" />
+          <figcaption>描画例 3</figcaption>
+        </figure>
+        <figure class="img-showcase">
+          <img src="images/drawing04.png" alt="描画例4" loading="lazy" />
+          <figcaption>描画例 4</figcaption>
+        </figure>
+      </div>
+
+      <div class="divider fade-in"></div>
+
+      <!-- Grid Tool -->
+      <div class="fade-in">
+        <h3 style="
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 8px;
+            ">
+          開発したツール：MarginExtractor
+        </h3>
+        <p class="section-lead">
+          iPad専用のネイティブアプリケーションとして開発。20×20の固定グリッド（400セル）で余白を選択します。
+        </p>
+      </div>
+
+      <figure class="img-showcase fade-in">
+        <img src="images/tool_grid.png" alt="グリッドベースツール" loading="lazy" style="background: #f8f8f8;" />
+        <figcaption>MarginExtractor 操作画面</figcaption>
+      </figure>
+
+      <div class="card fade-in" style="margin-top: 16px">
+        <div class="card-title">ツールの特徴</div>
+        <div class="card-text">
+          <div class="kv-row">
+            <span class="kv-key">グリッド解像度</span>
+            <span class="kv-val">20×20（400セル）</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">入力方式</span>
+            <span class="kv-val">Apple Pencil = 選択 / 指 = ズーム・パン</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">描画モード</span>
+            <span class="kv-val">ペンモード / 消しゴムモード</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">出力形式</span>
+            <span class="kv-val">画像（HEIC/JPEG）+ JSON</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Verification</div>
+        <h2 class="section-title">検証実験の結果</h2>
+        <p class="section-lead">
+          22名の参加者 × 8種類のポスター（グレースケール）で余白選択データを収集し、参加者間の<span class="highlight">一致度</span>と<span
+            class="highlight">選択パターン</span>を分析しました。
+        </p>
+      </div>
+
+      <!-- Experiment setup -->
+      <div class="card fade-in">
+        <div class="card-title">検証実験の設計</div>
+        <div class="card-text">
+          <div class="kv-row">
+            <span class="kv-key">実験参加者</span>
+            <span class="kv-val">22名（大学生・大学院生）</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">刺激</span>
+            <span class="kv-val">架空の鉄道会社ポスター 8点（グレースケール）</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">機材</span>
+            <span class="kv-val">iPad（第7世代）＋ スタイラスペン</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">所要時間</span>
+            <span class="kv-val">約20分（説明+練習+メイン+アンケート）</span>
+          </div>
+        </div>
+        <p class="note">
+          ※ 刺激はすべて架空の鉄道会社「久嶺」の観光広告に統一し、コンテンツの違いによる影響を排除
+        </p>
+      </div>
+
+      <div class="divider fade-in"></div>
+
+      <!-- Heatmaps -->
+      <div class="fade-in">
+        <h3 style="
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 8px;
+            ">
+          ヒートマップによる選択パターン分析
+        </h3>
+        <p class="section-lead">
+          22名の選択を重ね合わせたヒートマップを生成し、各ポスターの選択傾向を分析しました。<br />
+          <span style="color: var(--text-muted); font-size: 0.85rem;">濃い赤 = 多数が選択（高一致） / 薄い赤 = 一部が選択（低一致）</span>
+        </p>
+      </div>
+
+      <div class="heatmap-gallery fade-in">
+        <div class="heatmap-item">
+          <img src="images/heatmap_artboard1.png" alt="アートボード1のヒートマップ" loading="lazy" />
+          <div class="heatmap-info">
+            <h4>
+              アートボード 1
+              <span class="cv-badge cv-high">CV = 0.353</span>
+            </h4>
+            <p>
+              均一な背景 + 高コントラストのテキストで高い一致度
+            </p>
+          </div>
+        </div>
+
+        <div class="heatmap-item">
+          <img src="images/heatmap_artboard4.png" alt="アートボード4のヒートマップ" loading="lazy" />
+          <div class="heatmap-info">
+            <h4>
+              アートボード 4
+              <span class="cv-badge cv-high">CV = 0.308</span>
+            </h4>
+            <p>
+              明瞭なコントラスト＋シンプルな構成で最高の合意度
+            </p>
+          </div>
+        </div>
+
+        <div class="heatmap-item">
+          <img src="images/heatmap_artboard8.png" alt="アートボード8のヒートマップ" loading="lazy" />
+          <div class="heatmap-info">
+            <h4>
+              アートボード 8
+              <span class="cv-badge cv-mid">CV = 0.486</span>
+            </h4>
+            <p>
+              写真周囲に明確な余白がある「額縁型」配置
+            </p>
+          </div>
+        </div>
+
+        <div class="heatmap-item">
+          <img src="images/heatmap_artboard7.png" alt="アートボード7のヒートマップ" loading="lazy" />
+          <div class="heatmap-info">
+            <h4>
+              アートボード 7
+              <span class="cv-badge cv-low">CV = 0.948</span>
+            </h4>
+            <p>
+              竹林の写真背景で参加者の判断が二極化
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider fade-in"></div>
+
+      <!-- Classification -->
+      <div class="fade-in">
+        <h3 style="
+              font-size: 1.05rem;
+              font-weight: 600;
+              margin-bottom: 8px;
+            ">
+          余白認識の類型化の可能性
+        </h3>
+        <p class="section-lead">
+          変動係数（CV）と参加者の判断基準の分析から、余白認識の<span class="highlight">暫定的な3類型</span>が示唆されました。
+        </p>
+      </div>
+
+      <div class="classification-grid fade-in">
+        <div class="class-card">
+          <div class="class-cv">CV &lt; 0.4</div>
+          <div class="class-name">物理的特徴に<br />もとづく余白</div>
+          <div class="class-desc">
+            客観的・物理的な空白として認識しやすく、参加者間で一致度が高い
+          </div>
+        </div>
+        <div class="class-card">
+          <div class="class-cv">CV 0.4 – 0.7</div>
+          <div class="class-name">視覚的知覚に<br />もとづく余白</div>
+          <div class="class-desc">
+            視覚的な評価が必要で解釈の余地があり、中程度の一致度
+          </div>
+        </div>
+        <div class="class-card">
+          <div class="class-cv">CV &gt; 0.7</div>
+          <div class="class-name">意味的解釈に<br />もとづく余白</div>
+          <div class="class-desc">
+            デザイン意図の推測が必要で主観性が高く、一致度が低い
+          </div>
+        </div>
+      </div>
+
+      <div class="card fade-in" style="margin-top: 20px">
+        <div class="card-title">一致度に影響する3つの要因</div>
+        <div class="card-text">
+          <div class="kv-row">
+            <span class="kv-key">① コントラスト（明度差）</span>
+            <span class="kv-val">高コントラスト → 境界明瞭 → 高一致度</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">② 背景の均一性</span>
+            <span class="kv-val">均一な背景 → 「情報なし=余白」の判断が容易</span>
+          </div>
+          <div class="kv-row">
+            <span class="kv-key">③ 写真背景の有無</span>
+            <span class="kv-val">写真背景 → 解釈の二極化 → 低一致度</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONCLUSION ============ -->
+  <section id="conclusion">
+    <div class="container">
+      <div class="fade-in">
+        <div class="section-label">Conclusion</div>
+        <h2 class="section-title">まとめ</h2>
+      </div>
+
+      <div class="conclusion-highlights">
+        <div class="highlight-item fade-in">
+          <div class="highlight-num">1</div>
+          <div class="highlight-content">
+            <h3>描線ベースの手法で余白知覚の特徴を解明</h3>
+            <p>
+              余白の知覚に4つの特徴的パターンを確認し、余白が単なる物理的空白ではなくオブジェクトとの関係性において意味づけられる感性的領域であることを示しました。
+            </p>
+          </div>
+        </div>
+
+        <div class="highlight-item fade-in fade-in-delay-1">
+          <div class="highlight-num">2</div>
+          <div class="highlight-content">
+            <h3>グリッドベースの手法で余白認識の定量化に成功</h3>
+            <p>
+              描線ベースの課題（粒度のばらつき、境界の曖昧さ）を解決するグリッドベースの抽出ツールを開発し、定量的な比較分析を実現しました。
+            </p>
+          </div>
+        </div>
+
+        <div class="highlight-item fade-in fade-in-delay-2">
+          <div class="highlight-num">3</div>
+          <div class="highlight-content">
+            <h3>一致度に影響する要因と余白の3類型を示唆</h3>
+            <p>
+              コントラスト・背景の均一性・写真背景の有無が参加者間の一致度に影響することを特定。余白認識の暫定的な3類型（物理的・視覚的・意味的）が示唆されました。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fade-in" style="margin-top: 32px">
+        <div class="card-title">今後の研究課題</div>
+        <div class="card-text">
+          <div class="pattern-list" style="margin: 8px 0 0 0; gap: 10px">
+            <div class="pattern-item" style="
+                  padding: 12px 16px;
+                  background: var(--bg-accent);
+                  border: none;
+                ">
+              <div class="pattern-text">
+                デザイン経験の有無による余白認識の違いの検証
+              </div>
+            </div>
+            <div class="pattern-item" style="
+                  padding: 12px 16px;
+                  background: var(--bg-accent);
+                  border: none;
+                ">
+              <div class="pattern-text">
+                余白の構成的特徴（位置・形状・分布パターン）と評価の関係
+              </div>
+            </div>
+            <div class="pattern-item" style="
+                  padding: 12px 16px;
+                  background: var(--bg-accent);
+                  border: none;
+                ">
+              <div class="pattern-text">
+                グリッド解像度の最適化と適応的グリッドの開発
+              </div>
+            </div>
+            <div class="pattern-item" style="
+                  padding: 12px 16px;
+                  background: var(--bg-accent);
+                  border: none;
+                ">
+              <div class="pattern-text">
+                余白認識に物理的・視覚的・意味的な質的差異が存在するかの検証
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <p>
+      日本感性工学会 学生交流会 2026<br />
+      筑波大学 — 大杖 裕喜
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
